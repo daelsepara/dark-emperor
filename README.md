@@ -1,2 +1,4 @@
-# dark-emperor
-Dark Emperor Digitization (An Avalon Hill Board Game from 1985)
+# Dark Emperor
+
+Digitization of Dark Emperor, an Avalon Hill board game from 1985.
+
