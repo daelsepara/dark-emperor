@@ -7,7 +7,7 @@
 #include <SDL_ttf.h>
 
 // functions and classes for handling SDL colors
-namespace HexMap::Color
+namespace Hex::Color
 {
     Uint8 R(Uint32 c) { return (Uint8)((c & 0xFF0000) >> 16); }
 

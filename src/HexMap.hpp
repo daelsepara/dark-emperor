@@ -2,8 +2,9 @@
 #define __HEX_MAP__
 
 #include <cmath>
+#include <vector>
 
-namespace HexMap
+namespace Hex
 {
     // cartesian coordinates
     class Point
@@ -110,7 +111,7 @@ namespace HexMap
         return Point(center.X + int(std::round(size * std::cos(rad))), center.Y + int(std::round(size * std::sin(rad))));
     }
 
-    std::vector<Point> Tile(Point center, int size, bool flat = false)
+    std::vector<Point> Vertices(Point center, int size, bool flat = false)
     {
         // hex-tile
         auto hex = std::vector<Point>();
@@ -122,6 +123,38 @@ namespace HexMap
 
         return hex;
     }
+
+    class Tile
+    {
+    public:
+        // square grid coordinates
+        int X = -1;
+
+        int Y = -1;
+
+        // cube coordinates
+        int Q = -1;
+
+        int R = -1;
+
+        int S = -1;
+    };
+
+    class Map
+    {
+    public:
+        int Width = -1;
+
+        int Height = -1;
+
+        Point Draw = Point(-1, -1);
+
+        Point Offset = Point(-1, -1);
+
+        bool Flat = false;
+
+        std::vector<std::vector<Hex::Tile>> Tiles = {};
+    };
 }
 
 #endif

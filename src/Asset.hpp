@@ -3,14 +3,14 @@
 
 #include "Primitives.hpp"
 
-namespace HexMap::Asset
+namespace Hex::Asset
 {
     // create texture from a file
     SDL_Texture *Create(SDL_Renderer *renderer, const char *path)
     {
         SDL_Texture *texture = nullptr;
 
-        auto surface = HexMap::Load(path);
+        auto surface = Hex::Load(path);
 
         if (surface)
         {
@@ -23,7 +23,7 @@ namespace HexMap::Asset
                 SDL_SetTextureColorMod(texture, Color::R(Color::Active), Color::G(Color::Active), Color::B(Color::Active));
             }
 
-            HexMap::Free(&surface);
+            Hex::Free(&surface);
         }
 
         return texture;

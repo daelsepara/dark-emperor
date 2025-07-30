@@ -8,7 +8,7 @@
 
 #include "Color.hpp"
 
-namespace HexMap
+namespace Hex
 {
     // load an image as an SDL surface
     SDL_Surface *Load(const char *image)
@@ -50,7 +50,7 @@ namespace HexMap
     {
         SDL_Texture *texture = nullptr;
 
-        auto surface = HexMap::Load(path);
+        auto surface = Hex::Load(path);
 
         if (surface)
         {
@@ -63,7 +63,7 @@ namespace HexMap
                 SDL_SetTextureColorMod(texture, Color::R(Color::Active), Color::G(Color::Active), Color::B(Color::Active));
             }
 
-            HexMap::Free(&surface);
+            Hex::Free(&surface);
         }
 
         return texture;
@@ -81,7 +81,7 @@ namespace HexMap
     {
         auto width = 0;
 
-        HexMap::Size(texture, &width, nullptr);
+        Hex::Size(texture, &width, nullptr);
 
         return width;
     }
@@ -90,7 +90,7 @@ namespace HexMap
     {
         auto height = 0;
 
-        HexMap::Size(texture, nullptr, &height);
+        Hex::Size(texture, nullptr, &height);
 
         return height;
     }

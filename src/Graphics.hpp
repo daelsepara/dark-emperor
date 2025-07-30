@@ -10,7 +10,7 @@
 #include "HexMap.hpp"
 #include "Primitives.hpp"
 
-namespace HexMap::Graphics
+namespace Hex::Graphics
 {
     // horizontal scan lines toggle
     bool ScanLinesEnabled = true;
@@ -218,7 +218,7 @@ namespace HexMap::Graphics
 
         auto texture_h = 0;
 
-        HexMap::Size(texture, &texture_w, &texture_h);
+        Hex::Size(texture, &texture_w, &texture_h);
 
         Graphics::Render(graphics, texture, texture_w, texture_h, x, y, texture_h, 0, texture_w, texture_h, 0);
     }

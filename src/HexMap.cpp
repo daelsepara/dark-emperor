@@ -2,27 +2,27 @@
 #include "HexMap.hpp"
 #include "Asset.hpp"
 
-namespace HexMap
+namespace Hex
 {
     void Main()
     {
-        auto graphics = Graphics::Initialize("HexMap Test");
+        auto graphics = Graphics::Initialize("Hex Test");
 
         auto size = 54;
 
         auto hex_scale = std::sqrt(3.0);
 
-        auto texture = HexMap::Create(graphics.Renderer, "images/ninja-head.png");
+        auto texture = Hex::Create(graphics.Renderer, "images/ninja-head.png");
 
-        auto tw = HexMap::Width(texture);
+        auto tw = Hex::Width(texture);
 
-        auto th = HexMap::Height(texture);
+        auto th = Hex::Height(texture);
 
         auto size_x = 12;
 
         auto size_y = 8;
 
-        auto flat = true;
+        auto flat = false;
 
         auto offset_x = 0;
 
@@ -41,7 +41,7 @@ namespace HexMap
             offset_y = int(graphics.Height - ((size_y * 3 + 1) * size) / 2) / 2 + size;
         }
 
-        auto hex = HexMap::Tile(Point(0, 0), size, flat);
+        auto hex = Hex::Vertices(Point(0, 0), size, flat);
 
         while (true)
         {
@@ -134,7 +134,7 @@ namespace HexMap
             SDL_FlushEvent(result.type);
         }
 
-        HexMap::Free(&texture);
+        Hex::Free(&texture);
 
         Graphics::Quit(graphics);
     }
@@ -142,7 +142,7 @@ namespace HexMap
 
 int main(int argc, char **argv)
 {
-    HexMap::Main();
+    Hex::Main();
 
     return 0;
 }
