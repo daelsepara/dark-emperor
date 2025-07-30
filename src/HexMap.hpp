@@ -101,23 +101,23 @@ namespace HexMap
         }
     };
 
-    Point Corner(Point center, int size, int corner)
+    Point Corner(Point center, int size, int corner, bool flat = false)
     {
-        auto deg = 60.0 * corner - 30.0;
+        auto deg = 60.0 * corner - (flat ? 0.0 : 30.0);
 
         double rad = M_PI / 180.0 * deg;
 
         return Point(center.X + int(std::round(size * std::cos(rad))), center.Y + int(std::round(size * std::sin(rad))));
     }
 
-    std::vector<Point> Tile(Point center, int size)
+    std::vector<Point> Tile(Point center, int size, bool flat = false)
     {
         // hex-tile
         auto hex = std::vector<Point>();
 
         for (auto corner = 0; corner < 6; corner++)
         {
-            hex.push_back(Corner(center, size, corner));
+            hex.push_back(Corner(center, size, corner, flat));
         }
 
         return hex;

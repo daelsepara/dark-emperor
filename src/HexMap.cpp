@@ -20,38 +20,79 @@ namespace HexMap
 
         auto size_x = 12;
 
-        auto size_r = 8;
+        auto size_y = 8;
 
-        auto offset_x = int(graphics.Width - ((size_x * 2 + 1) * size * hex_scale) / 2) / 2;
+        auto flat = true;
 
-        auto offset_y = int(graphics.Height - ((size_r * 3 + 1) * size) / 2) / 2 + size;
+        auto offset_x = 0;
 
-        auto hex = HexMap::Tile(Point(0, 0), size);
+        auto offset_y = 0;
+
+        if (flat)
+        {
+            offset_x = int(graphics.Width - ((size_x * 3 + 1) * size) / 2) / 2 + size;
+
+            offset_y = int(graphics.Height - ((size_y * 2 + 1) * size * hex_scale) / 2) / 2;
+        }
+        else
+        {
+            offset_x = int(graphics.Width - ((size_x * 2 + 1) * size * hex_scale) / 2) / 2;
+
+            offset_y = int(graphics.Height - ((size_y * 3 + 1) * size) / 2) / 2 + size;
+        }
+
+        auto hex = HexMap::Tile(Point(0, 0), size, flat);
 
         while (true)
         {
             Graphics::FillWindow(graphics, Color::Background);
 
-            for (auto y = 0; y < size_r; y++)
+            for (auto y = 0; y < size_y; y++)
             {
-                auto hex_offset = hex_scale / 2.0 * (y % 2 + 1);
-
-                auto cy = y * (3.0 / 2.0) * size;
+                auto cy = 0;
 
                 for (auto x = 0; x < size_x; x++)
                 {
-                    auto cx = (hex_scale * x + hex_offset) * size;
+                    auto cx = 0;
+
+                    if (flat)
+                    {
+                        auto hex_offset = hex_scale / 2.0 * (x % 2 + 1);
+
+                        cy = (hex_scale * y + hex_offset) * size;
+
+                        cx = x * (3.0 / 2.0) * size;
+                    }
+                    else
+                    {
+                        auto hex_offset = hex_scale / 2.0 * (y % 2 + 1);
+
+                        cx = (hex_scale * x + hex_offset) * size;
+
+                        cy = y * (3.0 / 2.0) * size;
+                    }
 
                     Graphics::DrawHex(graphics, hex, cx + offset_x, cy + offset_y, Color::Highlight);
 
-                    if ((x % 3 == 0 && y % 2 == 0) || (x % 3 == 1 && y % 2 == 1))
-                    {
-                        auto texture_x = int(cx) - tw / 2;
+                    auto show = false;
 
-                        auto texture_y = int(cy) - th / 2;
+                    if (flat)
+                    {
+                        show = (y % 3 == 0 && x % 2 == 0) || (y % 3 == 1 && x % 2 == 1);
+                    }
+                    else
+                    {
+                        show = (x % 3 == 0 && y % 2 == 0) || (x % 3 == 1 && y % 2 == 1);
+                    }
+
+                    if (show)
+                    {
+                        auto texture_x = cx - tw / 2;
+
+                        auto texture_y = cy - th / 2;
 
                         Graphics::Render(graphics, texture, texture_x + offset_x, texture_y + offset_y);
-
+                        
                         Graphics::DrawRect(graphics, 64, 64, texture_x + offset_x, texture_y + offset_y, Color::Active);
                     }
                 }
