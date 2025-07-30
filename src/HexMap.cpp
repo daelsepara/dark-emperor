@@ -22,7 +22,7 @@ namespace Hex
 
         auto size_y = 8;
 
-        auto flat = false;
+        auto flat = true;
 
         auto offset_x = 0;
 
