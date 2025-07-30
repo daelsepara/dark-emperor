@@ -106,7 +106,7 @@ namespace Hex
     {
         auto deg = 60.0 * corner - (flat ? 0.0 : 30.0);
 
-        double rad = M_PI / 180.0 * deg;
+        auto rad = M_PI / 180.0 * deg;
 
         return Point(center.X + int(std::round(size * std::cos(rad))), center.Y + int(std::round(size * std::sin(rad))));
     }
@@ -124,39 +124,66 @@ namespace Hex
         return hex;
     }
 
+    // cube coordinates
+    class Cube
+    {
+    public:
+        int Q = 0;
+
+        int R = 0;
+
+        int S = 0;
+
+        Cube(int q, int r, int s) : Q(q), R(r), S(s) {}
+
+        Cube(int q, int r) : Q(q), R(r) { this->S = -(this->Q + this->R); }
+
+        Cube() {}
+    };
+
     class Tile
     {
     public:
         // square grid coordinates
-        int X = -1;
-
-        int Y = -1;
+        Point Point;
 
         // cube coordinates
-        int Q = -1;
+        Cube Hex;
 
-        int R = -1;
+        Tile(int x, int y) : Point(x, y)
+        {
+            auto parity = this->Point.X & 1;
 
-        int S = -1;
+            this->Hex = Cube(this->Point.X, this->Point.Y - (this->Point.X - parity) / 2);
+        }
     };
 
     class Map
     {
     public:
-        // dimensions
-        Point Size = Point(-1, -1);
+        // dimensions (number of tile rows and columns)
+        Point Dimensions;
 
-        // location (on screen) where maps is drawn
-        Point Draw = Hex::Point(-1, -1);
+        // location (on screen) where map is drawn
+        Point Draw = Point(0, 0);
 
         // top-left coordinates of viewing region
-        Point View = Hex::Point(-1, -1);
+        Point View = Point(0, 0);
 
-        // flat or pointed mode
+        // flat or pointed orientation
         bool Flat = false;
 
-        // tiles comprising the Hex Grid Map
-        std::vector<std::vector<Hex::Tile>> Tiles = {};
+        // size of the tiles in pixels
+        int Size;
+
+        // tiles comprising the map
+        std::vector<std::vector<Tile>> Tiles = {};
+
+        Map(int width, int height, int size) : Dimensions(width, height), Size(size) {}
+
+        Map(int width, int height) : Dimensions(width, height) {}
+
+        Map() {}
     };
 }
 
