@@ -139,6 +139,10 @@ namespace Hex
         Cube(int q, int r) : Q(q), R(r) { this->S = -(this->Q + this->R); }
 
         Cube() {}
+
+        int Sum() { return (this->Q + this->R + this->S); }
+
+        bool IsValid() { return this->Sum() == 0; }
     };
 
     class Tile
@@ -150,12 +154,23 @@ namespace Hex
         // cube coordinates
         Cube Hex;
 
-        Tile(int x, int y) : Point(x, y)
+        Tile(int x, int y, bool flat) : Point(x, y)
         {
-            auto parity = this->Point.X & 1;
+            auto parity = (flat ? this->Point.X : this->Point.Y) & 1;
 
-            this->Hex = Cube(this->Point.X, this->Point.Y - (this->Point.X - parity) / 2);
+            if (flat)
+            {
+                this->Hex = Cube(this->Point.X, this->Point.Y - (this->Point.X - parity) / 2);
+            }
+            else
+            {
+                this->Hex = Cube(this->Point.X - (this->Point.Y - parity) / 2, this->Point.Y);
+            }
         }
+
+        Tile(int x, int y) : Tile(x, y, true) {}
+
+        bool IsValid() { return this->Hex.IsValid(); }
     };
 
     class Map
