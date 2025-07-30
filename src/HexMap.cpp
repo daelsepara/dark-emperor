@@ -92,7 +92,7 @@ namespace Hex
                         auto texture_y = cy - th / 2;
 
                         Graphics::Render(graphics, texture, texture_x + offset_x, texture_y + offset_y);
-                        
+
                         Graphics::DrawRect(graphics, 64, 64, texture_x + offset_x, texture_y + offset_y, Color::Active);
                     }
                 }

@@ -143,16 +143,19 @@ namespace Hex
     class Map
     {
     public:
-        int Width = -1;
+        // dimensions
+        Point Size = Point(-1, -1);
 
-        int Height = -1;
+        // location (on screen) where maps is drawn
+        Point Draw = Hex::Point(-1, -1);
 
-        Point Draw = Point(-1, -1);
+        // top-left coordinates of viewing region
+        Point View = Hex::Point(-1, -1);
 
-        Point Offset = Point(-1, -1);
-
+        // flat or pointed mode
         bool Flat = false;
 
+        // tiles comprising the Hex Grid Map
         std::vector<std::vector<Hex::Tile>> Tiles = {};
     };
 }
