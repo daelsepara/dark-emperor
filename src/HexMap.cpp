@@ -14,7 +14,9 @@ namespace Hex
 
         auto th = Hex::Height(texture);
 
-        auto map = Hex::Map(12, 8, 54, true);
+        auto flat = true;
+
+        auto map = Hex::Map(flat ? 14 : 12, 8, 54, flat);
 
         map.View = Point(0, 0);
 
