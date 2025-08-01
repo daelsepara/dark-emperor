@@ -6,15 +6,21 @@ namespace Hex
 {
     void Main()
     {
+        auto flat = true;
+
         auto graphics = Graphics::Initialize("Hex Test");
 
         auto texture = Hex::Create(graphics.Renderer, "images/ninja-head.png");
 
-        auto tw = Hex::Width(texture);
+        auto texture_w = Hex::Width(texture);
 
-        auto th = Hex::Height(texture);
+        auto texture_h = Hex::Height(texture);
 
-        auto flat = true;
+        auto terrain = Hex::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+
+        auto terrain_w = Hex::Width(terrain);
+
+        auto terrain_h = Hex::Height(terrain);
 
         auto map = Hex::Map(flat ? 14 : 12, 8, 54, flat);
 
@@ -68,11 +74,6 @@ namespace Hex
                         cy = int(point.Y * Hex::Offset * map.Size);
                     }
 
-                    // draw hex
-                    Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
-
-                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Active);
-
                     auto show = false;
 
                     if (map.Flat)
@@ -86,14 +87,28 @@ namespace Hex
 
                     if (show)
                     {
-                        auto texture_x = cx - tw / 2;
+                        // draw hex
+                        Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
 
-                        auto texture_y = cy - th / 2;
+                        auto texture_x = cx - texture_w / 2;
+
+                        auto texture_y = cy - texture_h / 2;
 
                         Graphics::Render(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
 
                         Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Highlight);
                     }
+                    else
+                    {
+                        // show texture
+                        auto terrain_x = cx - terrain_w / 2;
+
+                        auto terrain_y = cy - terrain_h / 2;
+
+                        Graphics::Render(graphics, terrain, map.Draw.X + terrain_x, map.Draw.Y + terrain_y);
+                    }
+
+                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Active);
                 }
             }
 
@@ -132,6 +147,8 @@ namespace Hex
 
             SDL_FlushEvent(result.type);
         }
+
+        Hex::Free(&terrain);
 
         Hex::Free(&texture);
 
