@@ -71,7 +71,7 @@ namespace Hex
                     // draw hex
                     Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
 
-                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Background);
+                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Active);
 
                     auto show = false;
 
