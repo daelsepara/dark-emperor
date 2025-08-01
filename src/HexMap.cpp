@@ -8,75 +8,63 @@ namespace Hex
     {
         auto graphics = Graphics::Initialize("Hex Test");
 
-        auto size = 54;
-
-        auto hex_scale = std::sqrt(3.0);
-
         auto texture = Hex::Create(graphics.Renderer, "images/ninja-head.png");
 
         auto tw = Hex::Width(texture);
 
         auto th = Hex::Height(texture);
 
-        auto size_x = 12;
+        auto map = Hex::Map(12, 8, 54, true);
 
-        auto size_y = 8;
-
-        auto flat = true;
-
-        auto offset_x = 0;
-
-        auto offset_y = 0;
-
-        if (flat)
+        if (map.Flat)
         {
-            offset_x = int(graphics.Width - ((size_x * 3 + 1) * size) / 2) / 2 + size;
+            map.Draw.X = int(graphics.Width - (map.Dimensions.X * 3 + 1) * map.Size / 2) / 2 + map.Size;
 
-            offset_y = int(graphics.Height - ((size_y * 2 + 1) * size * hex_scale) / 2) / 2;
+            map.Draw.Y = int(graphics.Height - (map.Dimensions.Y * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
         }
         else
         {
-            offset_x = int(graphics.Width - ((size_x * 2 + 1) * size * hex_scale) / 2) / 2;
+            map.Draw.X = int(graphics.Width - (map.Dimensions.X * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
 
-            offset_y = int(graphics.Height - ((size_y * 3 + 1) * size) / 2) / 2 + size;
+            map.Draw.Y = int(graphics.Height - (map.Dimensions.Y * 3 + 1) * map.Size / 2) / 2 + map.Size;
         }
 
-        auto hex = Hex::Vertices(Point(0, 0), size, flat);
+        auto hex = Hex::Vertices(Point(0, 0), map.Size, map.Flat);
 
         while (true)
         {
             Graphics::FillWindow(graphics, Color::Background);
 
-            for (auto y = 0; y < size_y; y++)
+            for (auto y = map.View.Y; y < map.View.Y + map.Limit.Y; y++)
             {
                 auto cy = 0;
 
-                for (auto x = 0; x < size_x; x++)
+                for (auto x = map.View.X; x < map.View.X + map.Limit.X; x++)
                 {
                     auto cx = 0;
 
-                    if (flat)
+                    if (map.Flat)
                     {
-                        auto hex_offset = hex_scale / 2.0 * (x % 2 + 1);
+                        auto hex_offset = Hex::Scale / 2.0 * (x % 2 + 1);
 
-                        cy = (hex_scale * y + hex_offset) * size;
+                        cy = int((Hex::Scale * y + hex_offset) * map.Size);
 
-                        cx = x * (3.0 / 2.0) * size;
+                        cx = int(x * Hex::Offset * map.Size);
                     }
                     else
                     {
-                        auto hex_offset = hex_scale / 2.0 * (y % 2 + 1);
+                        auto hex_offset = Hex::Scale / 2.0 * (y % 2 + 1);
 
-                        cx = (hex_scale * x + hex_offset) * size;
+                        cx = int((Hex::Scale * x + hex_offset) * map.Size);
 
-                        cy = y * (3.0 / 2.0) * size;
+                        cy = int(y * Hex::Offset * map.Size);
                     }
 
-                    Graphics::DrawHex(graphics, hex, cx + offset_x, cy + offset_y, Color::Highlight);
+                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Highlight);
 
                     auto show = false;
 
-                    if (flat)
+                    if (map.Flat)
                     {
                         show = (y % 3 == 0 && x % 2 == 0) || (y % 3 == 1 && x % 2 == 1);
                     }
@@ -91,9 +79,9 @@ namespace Hex
 
                         auto texture_y = cy - th / 2;
 
-                        Graphics::Render(graphics, texture, texture_x + offset_x, texture_y + offset_y);
+                        Graphics::Render(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
 
-                        Graphics::DrawRect(graphics, 64, 64, texture_x + offset_x, texture_y + offset_y, Color::Active);
+                        Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Active);
                     }
                 }
             }

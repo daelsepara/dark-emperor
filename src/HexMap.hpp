@@ -6,6 +6,10 @@
 
 namespace Hex
 {
+    const double Scale = std::sqrt(3.0);
+
+    const double Offset = 3.0 / 2.0;
+
     // cartesian coordinates
     class Point
     {
@@ -194,6 +198,9 @@ namespace Hex
         // top-left coordinates of viewing region
         Point View = Point(0, 0);
 
+        // size of viewable region
+        Point Limit = Point(0, 0);
+
         // flat or pointed orientation
         bool Flat = false;
 
@@ -214,6 +221,12 @@ namespace Hex
                     this->Tiles[y][x].Initialize(x, y, this->Flat);
                 }
             }
+
+            this->Draw = Point(0, 0);
+
+            this->View = Point(0, 0);
+
+            this->Limit = Point(width, height);
         }
 
         Map(int width, int height) : Dimensions(width, height) {}
