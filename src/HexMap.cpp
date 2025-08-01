@@ -18,7 +18,7 @@ namespace Hex
 
         map.View = Point(0, 0);
 
-        map.Limit = Point(12, 8);
+        map.Limit = map.Dimensions - map.View * 2;
 
         if (map.Flat)
         {
