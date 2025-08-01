@@ -140,7 +140,7 @@ namespace Hex
                     if (show)
                     {
                         // draw filled hex
-                        Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
+                        Graphics::RenderHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
 
                         auto texture_x = cx - texture_w / 2;
 
@@ -158,15 +158,17 @@ namespace Hex
 
                         auto terrain_y = cy - terrain_h / 2;
 
+                        auto offset = map.Draw + Point(terrain_x, terrain_y);
+
                         if (blind)
                         {
                             // render texture at location
-                            Graphics::RenderTexture(graphics, terrain, map.Draw + Point(terrain_x, terrain_y));
+                            Graphics::RenderTexture(graphics, terrain, offset);
                         }
                         else
                         {
                             // render texture within hex boundaries
-                            Graphics::RenderHex(graphics, terrain, offset_hex, map.Draw + Point(terrain_x, terrain_y), map.Flat);
+                            Graphics::RenderHex(graphics, terrain, offset_hex, offset, map.Flat);
                         }
                     }
 

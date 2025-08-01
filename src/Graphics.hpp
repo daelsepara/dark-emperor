@@ -178,26 +178,6 @@ namespace Hex::Graphics
         }
     }
 
-    void DrawHex(Base &graphics, Points hex, int offset_x, int offset_y, Uint32 color)
-    {
-        SDL_Point points[7];
-
-        for (auto i = 0; i < 6; i++)
-        {
-            points[i].x = hex[i].X + offset_x;
-
-            points[i].y = hex[i].Y + offset_y;
-        }
-
-        points[6].x = hex[0].X + offset_x;
-
-        points[6].y = hex[0].Y + offset_y;
-
-        SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
-
-        SDL_RenderDrawLines(graphics.Renderer, points, 7);
-    }
-
     // draw line
     void DrawLine(Base &graphics, Point start, Point end, Point offset, Uint32 color)
     {
@@ -216,12 +196,35 @@ namespace Hex::Graphics
         SDL_RenderDrawLines(graphics.Renderer, points, 2);
     }
 
+    // draw hex outline
+    void DrawHex(Base &graphics, Points hex, int offset_x, int offset_y, Uint32 color)
+    {
+        SDL_Point points[7];
+
+        for (auto i = 0; i < 6; i++)
+        {
+            points[i].x = hex[i].X + offset_x;
+
+            points[i].y = hex[i].Y + offset_y;
+        }
+
+        // draw a line connecting the last vertex to the first vertex
+        points[6].x = hex[0].X + offset_x;
+
+        points[6].y = hex[0].Y + offset_y;
+
+        SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+
+        SDL_RenderDrawLines(graphics.Renderer, points, 7);
+    }
+
+    // draw hex outline
     void DrawHex(Base &graphics, Points hex, Uint32 color)
     {
         Graphics::DrawHex(graphics, hex, 0, 0, color);
     }
 
-    // return points comprising the line (x0, y0) - (x1, y1)
+    // return points comprising the line (x0, y0) - (x1, y1) using Bresenham's line algorithm
     Points Line(int x0, int y0, int x1, int y1)
     {
         auto points = Points();
@@ -267,54 +270,18 @@ namespace Hex::Graphics
         return points;
     }
 
-    void PaintHex(Base &graphics, Points hex, Point offset, Uint32 color, bool flat)
+    // return points comprising the line (start) - (end) using Bresenham's line algorithm
+    Points Line(Point start, Point end)
     {
-        if (flat)
-        {
-            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[3].X, hex[3].Y);
-
-            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
-
-            for (auto i = 0; i < std::min(tl.size(), tr.size()); i++)
-            {
-                Graphics::DrawLine(graphics, tl[i], tr[i], offset, color);
-            }
-
-            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
-
-            auto br = Graphics::Line(hex[0].X, hex[0].Y, hex[1].X, hex[1].Y);
-
-            for (auto i = 0; i < std::min(bl.size(), br.size()); i++)
-            {
-                Graphics::DrawLine(graphics, bl[i], br[i], offset, color);
-            }
-        }
-        else
-        {
-            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
-
-            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
-
-            for (auto i = 0; i < std::min(tl.size(), bl.size()); i++)
-            {
-                Graphics::DrawLine(graphics, tl[i], bl[i], offset, color);
-            }
-
-            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
-
-            auto br = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
-
-            for (auto i = 0; i < std::min(tr.size(), br.size()); i++)
-            {
-                Graphics::DrawLine(graphics, tr[i], br[i], offset, color);
-            }
-        }
+        return Graphics::Line(start.X, start.Y, end.X, end.Y);
     }
 
+    // render texture line by line within boundary (start, end)
     void RenderHexTexture(Base &graphics, SDL_Texture *texture, Point start, Point end, Point offset)
     {
-        SDL_Rect src;
+        SDL_Rect src, dst;
 
+        // render one line from texture (horizontal or vertical)
         src.w = (end.X == start.X) ? 1 : (end.X - start.X);
 
         src.h = (end.Y == start.Y) ? 1 : (end.Y - start.Y);
@@ -322,8 +289,6 @@ namespace Hex::Graphics
         src.x = start.X;
 
         src.y = start.Y;
-
-        SDL_Rect dst;
 
         dst.w = src.w;
 
@@ -333,51 +298,92 @@ namespace Hex::Graphics
 
         dst.y = offset.Y + start.Y;
 
+        // copy one line of the texture (src) into a new location (dst)
         SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
     }
 
-    void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, bool flat)
+    void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, Uint32 color, bool flat)
     {
         if (flat)
         {
-            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[3].X, hex[3].Y);
+            auto tl = Graphics::Line(hex[4], hex[3]);
 
-            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+            auto tr = Graphics::Line(hex[5], hex[0]);
 
             for (auto i = 0; i < std::min(tl.size(), tr.size()); i++)
             {
-                Graphics::RenderHexTexture(graphics, texture, tl[i], tr[i], offset);
+                if (texture)
+                {
+                    Graphics::RenderHexTexture(graphics, texture, tl[i], tr[i], offset);
+                }
+                else
+                {
+                    Graphics::DrawLine(graphics, tl[i], tr[i], offset, color);
+                }
             }
 
-            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+            auto bl = Graphics::Line(hex[3], hex[2]);
 
-            auto br = Graphics::Line(hex[0].X, hex[0].Y, hex[1].X, hex[1].Y);
+            auto br = Graphics::Line(hex[0], hex[1]);
 
             for (auto i = 0; i < std::min(bl.size(), br.size()); i++)
             {
-                Graphics::RenderHexTexture(graphics, texture, bl[i], br[i], offset);
+                if (texture)
+                {
+                    Graphics::RenderHexTexture(graphics, texture, bl[i], br[i], offset);
+                }
+                else
+                {
+                    Graphics::DrawLine(graphics, bl[i], br[i], offset, color);
+                }
             }
         }
         else
         {
-            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
+            auto tl = Graphics::Line(hex[4], hex[5]);
 
-            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+            auto bl = Graphics::Line(hex[3], hex[2]);
 
             for (auto i = 0; i < std::min(tl.size(), bl.size()); i++)
             {
-                Graphics::RenderHexTexture(graphics, texture, tl[i], bl[i], offset);
+                if (texture)
+                {
+                    Graphics::RenderHexTexture(graphics, texture, tl[i], bl[i], offset);
+                }
+                else
+                {
+                    Graphics::DrawLine(graphics, tl[i], bl[i], offset, color);
+                }
             }
 
-            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+            auto tr = Graphics::Line(hex[5], hex[0]);
 
-            auto br = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
+            auto br = Graphics::Line(hex[2], hex[1]);
 
             for (auto i = 0; i < std::min(tr.size(), br.size()); i++)
             {
-                Graphics::RenderHexTexture(graphics, texture, tr[i], br[i], offset);
+                if (texture)
+                {
+                    Graphics::RenderHexTexture(graphics, texture, tr[i], br[i], offset);
+                }
+                else
+                {
+                    Graphics::DrawLine(graphics, tr[i], br[i], offset, color);
+                }
             }
         }
+    }
+
+    void RenderHex(Base &graphics, Points hex, Point offset, Uint32 color, bool flat)
+    {
+        // draw a filled hex
+        Graphics::RenderHex(graphics, nullptr, hex, offset, color, flat);
+    }
+
+    // render hex and texture within boundaries
+    void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, bool flat)
+    {
+        Graphics::RenderHex(graphics, texture, hex, offset, 0, flat);
     }
 
     // base render texture function
@@ -385,7 +391,7 @@ namespace Hex::Graphics
     {
         if (graphics.Renderer)
         {
-            SDL_Rect src;
+            SDL_Rect src, dst;
 
             src.w = texture_w;
 
@@ -394,8 +400,6 @@ namespace Hex::Graphics
             src.y = offset;
 
             src.x = 0;
-
-            SDL_Rect dst;
 
             dst.w = w;
 
