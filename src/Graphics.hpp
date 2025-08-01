@@ -14,7 +14,7 @@
 #undef SDL_HINT_RENDER_LINE_METHOD
 #endif
 
-#define SDL_HINT_RENDER_LINE_METHOD "1"
+#define SDL_HINT_RENDER_LINE_METHOD "2"
 
 namespace Hex::Graphics
 {
@@ -291,18 +291,18 @@ namespace Hex::Graphics
         }
         else
         {
-            auto tl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
 
-            auto bl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
+            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
 
             for (auto i = 0; i < std::min(tl.size(), bl.size()); i++)
             {
                 Graphics::DrawLine(graphics, tl[i], bl[i], offset, color);
             }
 
-            auto tr = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
+            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
 
-            auto br = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+            auto br = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
 
             for (auto i = 0; i < std::min(tr.size(), br.size()); i++)
             {
@@ -311,8 +311,77 @@ namespace Hex::Graphics
         }
     }
 
+    void RenderHexTexture(Base &graphics, SDL_Texture *texture, Point start, Point end, Point offset)
+    {
+        SDL_Rect src;
+
+        src.w = (end.X == start.X) ? 1 : (end.X - start.X);
+
+        src.h = (end.Y == start.Y) ? 1 : (end.Y - start.Y);
+
+        src.x = start.X;
+
+        src.y = start.Y;
+
+        SDL_Rect dst;
+
+        dst.w = src.w;
+
+        dst.h = src.h;
+
+        dst.x = offset.X + start.X;
+
+        dst.y = offset.Y + start.Y;
+
+        SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
+    }
+
+    void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, bool flat)
+    {
+        if (flat)
+        {
+            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[3].X, hex[3].Y);
+
+            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+
+            for (auto i = 0; i < std::min(tl.size(), tr.size()); i++)
+            {
+                Graphics::RenderHexTexture(graphics, texture, tl[i], tr[i], offset);
+            }
+
+            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+
+            auto br = Graphics::Line(hex[0].X, hex[0].Y, hex[1].X, hex[1].Y);
+
+            for (auto i = 0; i < std::min(bl.size(), br.size()); i++)
+            {
+                Graphics::RenderHexTexture(graphics, texture, bl[i], br[i], offset);
+            }
+        }
+        else
+        {
+            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
+
+            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+
+            for (auto i = 0; i < std::min(tl.size(), bl.size()); i++)
+            {
+                Graphics::RenderHexTexture(graphics, texture, tl[i], bl[i], offset);
+            }
+
+            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+
+            auto br = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
+
+            for (auto i = 0; i < std::min(tr.size(), br.size()); i++)
+            {
+                Graphics::RenderHexTexture(graphics, texture, tr[i], br[i], offset);
+            }
+        }
+    }
+
     // base render texture function
-    void Render(Base &graphics, SDL_Texture *texture, int texture_w, int texture_h, int x, int y, int bounds, int offset, int w, int h, Uint32 background)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int texture_w, int texture_h, int x, int y, int bounds, int offset, int w, int h, Uint32 background)
     {
         if (graphics.Renderer)
         {
@@ -351,16 +420,33 @@ namespace Hex::Graphics
     }
 
     // render texture at location
-    void Render(Base &graphics, SDL_Texture *texture, int x, int y)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int w, int h, int x, int y)
     {
-        // , int texture_w, int texture_h, int x, int y, int bounds, int offset, int w, int h, Uint32 background)
+        Graphics::RenderTexture(graphics, texture, w, h, x, y, h, 0, w, h, 0);
+    }
+
+    // render texture at location
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int x, int y)
+    {
         auto texture_w = 0;
 
         auto texture_h = 0;
 
         Hex::Size(texture, &texture_w, &texture_h);
 
-        Graphics::Render(graphics, texture, texture_w, texture_h, x, y, texture_h, 0, texture_w, texture_h, 0);
+        Graphics::RenderTexture(graphics, texture, texture_w, texture_h, x, y);
+    }
+
+    // render texture at location
+    void RenderTexture(Base &graphics, SDL_Texture *texture, Point point)
+    {
+        auto texture_w = 0;
+
+        auto texture_h = 0;
+
+        Hex::Size(texture, &texture_w, &texture_h);
+
+        Graphics::RenderTexture(graphics, texture, texture_w, texture_h, point.X, point.Y, texture_h, 0, texture_w, texture_h, 0);
     }
 
     // handle window events

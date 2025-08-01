@@ -1,13 +1,12 @@
+#include "Engine.hpp"
 #include "Graphics.hpp"
 #include "HexMap.hpp"
 #include "Asset.hpp"
 
 namespace Hex
 {
-    void Main()
+    void Main(int width, int height, int size, bool flat, bool blind, bool new_textures, bool crop)
     {
-        auto flat = true;
-
         auto graphics = Graphics::Initialize("Hex Test");
 
         auto texture = Hex::Create(graphics.Renderer, "images/ninja-head.png");
@@ -16,13 +15,46 @@ namespace Hex
 
         auto texture_h = Hex::Height(texture);
 
-        auto terrain = Hex::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+        SDL_Texture *terrain = nullptr;
+
+        if (new_textures)
+        {
+            terrain = Hex::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
+        }
+        else if (crop)
+        {
+            terrain = Hex::Create(graphics.Renderer, "images/desert.png");
+        }
+        else
+        {
+            terrain = Hex::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+        }
 
         auto terrain_w = Hex::Width(terrain);
 
         auto terrain_h = Hex::Height(terrain);
 
-        auto map = Hex::Map(flat ? 14 : 12, 8, 54, flat);
+        // works best only with boundary rendering, i.e. rendering texture within hex boundaries
+        if (crop)
+        {
+            // use only a portion of the texture
+            if (flat)
+            {
+                terrain_w = size * 2;
+
+                // pad
+                terrain_h = size * Hex::Scale + 1;
+            }
+            else
+            {
+                // pad
+                terrain_w = size * Hex::Scale + 1;
+
+                terrain_h = size * 2;
+            }
+        }
+
+        auto map = Hex::Map(width, height, size, flat);
 
         map.View = Point(0, 0);
 
@@ -43,6 +75,24 @@ namespace Hex
 
         auto hex = Hex::Vertices(Point(0, 0), map.Size, map.Flat);
 
+        auto offset_hex = Points();
+
+        auto min_x = hex[0].X;
+
+        auto min_y = hex[0].Y;
+
+        for (auto i = 0; i < hex.size(); i++)
+        {
+            min_x = std::min(min_x, hex[i].X);
+
+            min_y = std::min(min_y, hex[i].Y);
+        }
+
+        for (auto i = 0; i < hex.size(); i++)
+        {
+            offset_hex.push_back(hex[i] - Point(min_x, min_y));
+        }
+
         while (true)
         {
             Graphics::FillWindow(graphics, Color::Background);
@@ -57,6 +107,7 @@ namespace Hex
 
                     auto cx = 0;
 
+                    // calculate hex center locations
                     if (map.Flat)
                     {
                         auto hex_offset = Hex::Scale / 2.0 * (point.X % 2 + 1);
@@ -76,6 +127,7 @@ namespace Hex
 
                     auto show = false;
 
+                    // show hex "occupant"
                     if (map.Flat)
                     {
                         show = (point.Y % 3 == 0 && point.X % 2 == 0) || (point.Y % 3 == 1 && point.X % 2 == 1);
@@ -87,27 +139,38 @@ namespace Hex
 
                     if (show)
                     {
-                        // draw hex
+                        // draw filled hex
                         Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
 
                         auto texture_x = cx - texture_w / 2;
 
                         auto texture_y = cy - texture_h / 2;
 
-                        Graphics::Render(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
+                        // show texture
+                        Graphics::RenderTexture(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
 
                         Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Highlight);
                     }
                     else
                     {
-                        // show texture
+                        // calculate terrain tile offsets
                         auto terrain_x = cx - terrain_w / 2;
 
                         auto terrain_y = cy - terrain_h / 2;
 
-                        Graphics::Render(graphics, terrain, map.Draw.X + terrain_x, map.Draw.Y + terrain_y);
+                        if (blind)
+                        {
+                            // render texture at location
+                            Graphics::RenderTexture(graphics, terrain, map.Draw + Point(terrain_x, terrain_y));
+                        }
+                        else
+                        {
+                            // render texture within hex boundaries
+                            Graphics::RenderHex(graphics, terrain, offset_hex, map.Draw + Point(terrain_x, terrain_y), map.Flat);
+                        }
                     }
 
+                    // draw hex outline
                     Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Active);
                 }
             }
@@ -158,7 +221,30 @@ namespace Hex
 
 int main(int argc, char **argv)
 {
-    Hex::Main();
+    if (argc < 7)
+    {
+        std::cerr << "To Use:" << std::endl
+                  << std::endl
+                  << argv[0] << " [width] [height] [size in pixels] [flat/pointy orientation] [blind/boundary] [new/old/crop textures]" << std::endl;
+
+        exit(1);
+    }
+
+    auto width = std::atoi(argv[1]);
+
+    auto height = std::atoi(argv[2]);
+
+    auto size = std::atoi(argv[3]);
+
+    auto flat = Hex::Engine::ToUpper(argv[4]) == "FLAT";
+
+    auto blind = Hex::Engine::ToUpper(argv[5]) == "BLIND";
+
+    auto new_textures = Hex::Engine::ToUpper(argv[6]) == "NEW";
+
+    auto crop = Hex::Engine::ToUpper(argv[6]) == "CROP";
+
+    Hex::Main(width, height, size, flat, blind, new_textures, crop);
 
     return 0;
 }
