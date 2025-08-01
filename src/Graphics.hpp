@@ -112,7 +112,6 @@ namespace Hex::Graphics
         }
     }
 
-
     // add scan lines to display
     void Scanlines(Base &graphics)
     {
