@@ -154,8 +154,10 @@ namespace Hex
         // cube coordinates
         Cube Hex;
 
-        Tile(int x, int y, bool flat) : Point(x, y)
+        void Initialize(int x, int y, bool flat)
         {
+            this->Point = Hex::Point(x, y);
+
             auto parity = (flat ? this->Point.X : this->Point.Y) & 1;
 
             if (flat)
@@ -168,7 +170,14 @@ namespace Hex
             }
         }
 
+        Tile(int x, int y, bool flat)
+        {
+            this->Initialize(x, y, flat);
+        }
+
         Tile(int x, int y) : Tile(x, y, true) {}
+
+        Tile() {}
 
         bool IsValid() { return this->Hex.IsValid(); }
     };
@@ -194,11 +203,55 @@ namespace Hex
         // tiles comprising the map
         std::vector<std::vector<Tile>> Tiles = {};
 
-        Map(int width, int height, int size) : Dimensions(width, height), Size(size) {}
+        Map(int width, int height, int size, bool flat) : Dimensions(width, height), Flat(flat), Size(size)
+        {
+            this->Tiles = std::vector(height, std::vector(width, Hex::Tile()));
+
+            for (auto y = 0; y < height; y++)
+            {
+                for (auto x = 0; x < width; x++)
+                {
+                    this->Tiles[y][x].Initialize(x, y, this->Flat);
+                }
+            }
+        }
 
         Map(int width, int height) : Dimensions(width, height) {}
 
         Map() {}
+
+        // access location on the map
+        Tile &operator()(int x, int y)
+        {
+            return this->Tiles[y][x];
+        }
+
+        // access location on the map
+        Tile &operator()(const Point &point)
+        {
+            return (*this)(point.X, point.Y);
+        }
+
+        // access location to map using cube (axial) coordinates
+        Tile &operator()(int q, int r, int s)
+        {
+            auto parity = (this->Flat ? q : r) & 1;
+
+            if (this->Flat)
+            {
+                return (*this)(q, r + (q - parity) / 2);
+            }
+            else
+            {
+                return (*this)(q + (r - parity) / 2, r);
+            }
+        }
+
+        // access location to map using cube coordinates
+        Tile &operator()(const Cube &cube)
+        {
+            return (*this)(cube.Q, cube.R, cube.S);
+        }
     };
 }
 
