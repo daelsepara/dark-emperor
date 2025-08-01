@@ -16,17 +16,21 @@ namespace Hex
 
         auto map = Hex::Map(12, 8, 54, true);
 
+        map.View = Point(0, 0);
+
+        map.Limit = Point(12, 8);
+
         if (map.Flat)
         {
-            map.Draw.X = int(graphics.Width - (map.Dimensions.X * 3 + 1) * map.Size / 2) / 2 + map.Size;
+            map.Draw.X = int(graphics.Width - (map.Limit.X * 3 + 1) * map.Size / 2) / 2 + map.Size;
 
-            map.Draw.Y = int(graphics.Height - (map.Dimensions.Y * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
+            map.Draw.Y = int(graphics.Height - (map.Limit.Y * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
         }
         else
         {
-            map.Draw.X = int(graphics.Width - (map.Dimensions.X * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
+            map.Draw.X = int(graphics.Width - (map.Limit.X * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
 
-            map.Draw.Y = int(graphics.Height - (map.Dimensions.Y * 3 + 1) * map.Size / 2) / 2 + map.Size;
+            map.Draw.Y = int(graphics.Height - (map.Limit.Y * 3 + 1) * map.Size / 2) / 2 + map.Size;
         }
 
         auto hex = Hex::Vertices(Point(0, 0), map.Size, map.Flat);
@@ -41,23 +45,25 @@ namespace Hex
 
                 for (auto x = map.View.X; x < map.View.X + map.Limit.X; x++)
                 {
+                    auto point = map[Point(x, y)].Point - map.View;
+
                     auto cx = 0;
 
                     if (map.Flat)
                     {
-                        auto hex_offset = Hex::Scale / 2.0 * (x % 2 + 1);
+                        auto hex_offset = Hex::Scale / 2.0 * (point.X % 2 + 1);
 
-                        cy = int((Hex::Scale * y + hex_offset) * map.Size);
+                        cy = int((Hex::Scale * point.Y + hex_offset) * map.Size);
 
-                        cx = int(x * Hex::Offset * map.Size);
+                        cx = int(point.X * Hex::Offset * map.Size);
                     }
                     else
                     {
-                        auto hex_offset = Hex::Scale / 2.0 * (y % 2 + 1);
+                        auto hex_offset = Hex::Scale / 2.0 * (point.Y % 2 + 1);
 
-                        cx = int((Hex::Scale * x + hex_offset) * map.Size);
+                        cx = int((Hex::Scale * point.X + hex_offset) * map.Size);
 
-                        cy = int(y * Hex::Offset * map.Size);
+                        cy = int(point.Y * Hex::Offset * map.Size);
                     }
 
                     Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Highlight);
@@ -66,11 +72,11 @@ namespace Hex
 
                     if (map.Flat)
                     {
-                        show = (y % 3 == 0 && x % 2 == 0) || (y % 3 == 1 && x % 2 == 1);
+                        show = (point.Y % 3 == 0 && point.X % 2 == 0) || (point.Y % 3 == 1 && point.X % 2 == 1);
                     }
                     else
                     {
-                        show = (x % 3 == 0 && y % 2 == 0) || (x % 3 == 1 && y % 2 == 1);
+                        show = (point.X % 3 == 0 && point.Y % 2 == 0) || (point.X % 3 == 1 && point.Y % 2 == 1);
                     }
 
                     if (show)

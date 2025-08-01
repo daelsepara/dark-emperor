@@ -245,6 +245,11 @@ namespace Hex
             return (*this)(point.X, point.Y);
         }
 
+        Tile &operator[](const Point &point)
+        {
+            return (*this)(point);
+        }
+
         // access location to map using cube (axial) coordinates
         Tile &operator()(int q, int r, int s)
         {
