@@ -146,10 +146,12 @@ namespace Hex
 
                         auto texture_y = cy - texture_h / 2;
 
-                        // show texture
-                        Graphics::RenderTexture(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
+                        auto offset = map.Draw + Point(texture_x, texture_y);
 
-                        Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Highlight);
+                        // show texture
+                        Graphics::RenderTexture(graphics, texture, offset);
+
+                        Graphics::DrawRect(graphics, texture_w, texture_h, offset, Color::Highlight);
                     }
                     else
                     {
@@ -173,7 +175,7 @@ namespace Hex
                     }
 
                     // draw hex outline
-                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Active);
+                    Graphics::DrawPolygon(graphics, hex, map.Draw + Point(cx, cy), Color::Active);
                 }
             }
 
