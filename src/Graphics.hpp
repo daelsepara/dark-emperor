@@ -278,7 +278,7 @@ namespace Hex::Graphics
         return Graphics::Line(start.X, start.Y, end.X, end.Y);
     }
 
-    // render texture line by line within boundary (start, end)
+    // render one line of texture within the boundary (start, end)
     void RenderHexTexture(Base &graphics, SDL_Texture *texture, Point start, Point end, Point offset)
     {
         SDL_Rect src, dst;
@@ -304,6 +304,7 @@ namespace Hex::Graphics
         SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
     }
 
+    // render hex line by line within boundary (start, end)
     void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, Uint32 color, bool flat)
     {
         auto side1 = flat ? Graphics::Line(hex[4], hex[3]) : Graphics::Line(hex[4], hex[5]);
