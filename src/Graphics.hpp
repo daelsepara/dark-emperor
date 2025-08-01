@@ -136,10 +136,12 @@ namespace Hex::Graphics
         }
     }
 
+    // send to hardware / software renderer
     void RenderNow(Base &graphics)
     {
         if (graphics.Renderer)
         {
+            // show scanlines (if enabled)
             Graphics::Scanlines(graphics);
 
             SDL_RenderPresent(graphics.Renderer);
@@ -279,7 +281,7 @@ namespace Hex::Graphics
     }
 
     // render one line of texture within the boundary (start, end)
-    void RenderHexTexture(Base &graphics, SDL_Texture *texture, Point start, Point end, Point offset)
+    void RenderLineTexture(Base &graphics, SDL_Texture *texture, Point start, Point end, Point offset)
     {
         SDL_Rect src, dst;
 
@@ -307,19 +309,24 @@ namespace Hex::Graphics
     // render hex line by line within boundary (start, end)
     void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, Uint32 color, bool flat)
     {
+        // determine rendering method: flat (top to bottom) or pointy (left to right)
+
+        // side1, side2 => flat (top to midddle), pointy (left to middle)
         auto side1 = flat ? Graphics::Line(hex[4], hex[3]) : Graphics::Line(hex[4], hex[5]);
 
         auto side2 = flat ? Graphics::Line(hex[5], hex[0]) : Graphics::Line(hex[3], hex[2]);
 
+        // side3, side4 => flat (middle to bottom), pointy (middle to right)
         auto side3 = flat ? Graphics::Line(hex[3], hex[2]) : Graphics::Line(hex[5], hex[0]);
 
         auto side4 = flat ? Graphics::Line(hex[0], hex[1]) : Graphics::Line(hex[2], hex[1]);
 
+        // render texture / lines on first half of the hex
         for (auto i = 0; i < std::min(side1.size(), side2.size()); i++)
         {
             if (texture)
             {
-                Graphics::RenderHexTexture(graphics, texture, side1[i], side2[i], offset);
+                Graphics::RenderLineTexture(graphics, texture, side1[i], side2[i], offset);
             }
             else
             {
@@ -327,11 +334,12 @@ namespace Hex::Graphics
             }
         }
 
+        // render texture / lines on second half of the hex
         for (auto i = 0; i < std::min(side3.size(), side4.size()); i++)
         {
             if (texture)
             {
-                Graphics::RenderHexTexture(graphics, texture, side3[i], side4[i], offset);
+                Graphics::RenderLineTexture(graphics, texture, side3[i], side4[i], offset);
             }
             else
             {
@@ -410,13 +418,7 @@ namespace Hex::Graphics
     // render texture at location
     void RenderTexture(Base &graphics, SDL_Texture *texture, Point point)
     {
-        auto texture_w = 0;
-
-        auto texture_h = 0;
-
-        Hex::Size(texture, &texture_w, &texture_h);
-
-        Graphics::RenderTexture(graphics, texture, texture_w, texture_h, point.X, point.Y, texture_h, 0, texture_w, texture_h, 0);
+        Graphics::RenderTexture(graphics, texture, point.X, point.Y);
     }
 
     // handle window events
