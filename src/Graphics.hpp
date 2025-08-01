@@ -10,6 +10,12 @@
 #include "HexMap.hpp"
 #include "Primitives.hpp"
 
+#ifdef SDL_HINT_RENDER_LINE_METHOD
+#undef SDL_HINT_RENDER_LINE_METHOD
+#endif
+
+#define SDL_HINT_RENDER_LINE_METHOD "1"
+
 namespace Hex::Graphics
 {
     // horizontal scan lines toggle
@@ -106,10 +112,37 @@ namespace Hex::Graphics
         }
     }
 
+
+    // add scan lines to display
+    void Scanlines(Base &graphics)
+    {
+        if (ScanLinesEnabled)
+        {
+            SDL_Rect scanline;
+
+            scanline.w = graphics.Width;
+
+            scanline.h = 1;
+
+            scanline.x = 0;
+
+            SDL_SetRenderDrawColor(graphics.Renderer, 0, 0, 0, 0x40);
+
+            for (auto i = 0; i < graphics.Height; i += 2)
+            {
+                scanline.y = i + 1;
+
+                SDL_RenderFillRect(graphics.Renderer, &scanline);
+            }
+        }
+    }
+
     void RenderNow(Base &graphics)
     {
         if (graphics.Renderer)
         {
+            Graphics::Scanlines(graphics);
+
             SDL_RenderPresent(graphics.Renderer);
         }
     }
@@ -146,7 +179,7 @@ namespace Hex::Graphics
         }
     }
 
-    void DrawHex(Base &graphics, std::vector<Point> hex, int offset_x, int offset_y, Uint32 color)
+    void DrawHex(Base &graphics, Points hex, int offset_x, int offset_y, Uint32 color)
     {
         SDL_Point points[7];
 
@@ -166,9 +199,117 @@ namespace Hex::Graphics
         SDL_RenderDrawLines(graphics.Renderer, points, 7);
     }
 
-    void DrawHex(Base &graphics, std::vector<Point> hex, Uint32 color)
+    // draw line
+    void DrawLine(Base &graphics, Point start, Point end, Point offset, Uint32 color)
+    {
+        SDL_Point points[2];
+
+        points[0].x = start.X + offset.X;
+
+        points[0].y = start.Y + offset.Y;
+
+        points[1].x = end.X + offset.X;
+
+        points[1].y = end.Y + offset.Y;
+
+        SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+
+        SDL_RenderDrawLines(graphics.Renderer, points, 2);
+    }
+
+    void DrawHex(Base &graphics, Points hex, Uint32 color)
     {
         Graphics::DrawHex(graphics, hex, 0, 0, color);
+    }
+
+    // return points comprising the line (x0, y0) - (x1, y1)
+    Points Line(int x0, int y0, int x1, int y1)
+    {
+        auto points = Points();
+
+        auto dx = std::abs(x1 - x0);
+
+        auto sx = x0 < x1 ? 1 : -1;
+
+        auto dy = std::abs(y1 - y0);
+
+        auto sy = y0 < y1 ? 1 : -1;
+
+        auto err = (dx > dy ? dx : -dy) / 2;
+
+        auto e2 = 0;
+
+        while (true)
+        {
+            points.push_back(Point(x0, y0));
+
+            if (x0 == x1 && y0 == y1)
+            {
+                break;
+            }
+
+            e2 = err;
+
+            if (e2 > -dx)
+            {
+                err -= dy;
+
+                x0 += sx;
+            }
+
+            if (e2 < dy)
+            {
+                err += dx;
+
+                y0 += sy;
+            }
+        }
+
+        return points;
+    }
+
+    void PaintHex(Base &graphics, Points hex, Point offset, Uint32 color, bool flat)
+    {
+        if (flat)
+        {
+            auto tl = Graphics::Line(hex[4].X, hex[4].Y, hex[3].X, hex[3].Y);
+
+            auto tr = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+
+            for (auto i = 0; i < std::min(tl.size(), tr.size()); i++)
+            {
+                Graphics::DrawLine(graphics, tl[i], tr[i], offset, color);
+            }
+
+            auto bl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+
+            auto br = Graphics::Line(hex[0].X, hex[0].Y, hex[1].X, hex[1].Y);
+
+            for (auto i = 0; i < std::min(bl.size(), br.size()); i++)
+            {
+                Graphics::DrawLine(graphics, bl[i], br[i], offset, color);
+            }
+        }
+        else
+        {
+            auto tl = Graphics::Line(hex[3].X, hex[3].Y, hex[2].X, hex[2].Y);
+
+            auto bl = Graphics::Line(hex[4].X, hex[4].Y, hex[5].X, hex[5].Y);
+
+            for (auto i = 0; i < std::min(tl.size(), bl.size()); i++)
+            {
+                Graphics::DrawLine(graphics, tl[i], bl[i], offset, color);
+            }
+
+            auto tr = Graphics::Line(hex[2].X, hex[2].Y, hex[1].X, hex[1].Y);
+
+            auto br = Graphics::Line(hex[5].X, hex[5].Y, hex[0].X, hex[0].Y);
+
+            for (auto i = 0; i < std::min(tr.size(), br.size()); i++)
+            {
+                Graphics::DrawLine(graphics, tr[i], br[i], offset, color);
+            }
+        }
     }
 
     // base render texture function

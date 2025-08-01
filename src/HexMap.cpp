@@ -68,7 +68,10 @@ namespace Hex
                         cy = int(point.Y * Hex::Offset * map.Size);
                     }
 
-                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Highlight);
+                    // draw hex
+                    Graphics::PaintHex(graphics, hex, map.Draw + Point(cx, cy), Color::Inactive, map.Flat);
+
+                    Graphics::DrawHex(graphics, hex, map.Draw.X + cx, map.Draw.Y + cy, Color::Background);
 
                     auto show = false;
 
@@ -89,7 +92,7 @@ namespace Hex
 
                         Graphics::Render(graphics, texture, map.Draw.X + texture_x, map.Draw.Y + texture_y);
 
-                        Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Active);
+                        Graphics::DrawRect(graphics, 64, 64, map.Draw.X + texture_x, map.Draw.Y + texture_y, Color::Highlight);
                     }
                 }
             }

@@ -106,6 +106,12 @@ namespace Hex
         }
     };
 
+    typedef std::vector<Point> Points;
+
+    const Points FlatNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 0}, {-1, -1}};
+
+    const Points PointyNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 1}, {-1, 0}};
+
     Point Corner(Point center, int size, int corner, bool flat = false)
     {
         auto deg = 60.0 * corner - (flat ? 0.0 : 30.0);
@@ -115,10 +121,10 @@ namespace Hex
         return Point(center.X + int(std::round(size * std::cos(rad))), center.Y + int(std::round(size * std::sin(rad))));
     }
 
-    std::vector<Point> Vertices(Point center, int size, bool flat = false)
+    Points Vertices(Point center, int size, bool flat = false)
     {
         // hex-tile
-        auto hex = std::vector<Point>();
+        auto hex = Points();
 
         for (auto corner = 0; corner < 6; corner++)
         {
@@ -269,6 +275,43 @@ namespace Hex
         Tile &operator()(const Cube &cube)
         {
             return (*this)(cube.Q, cube.R, cube.S);
+        }
+
+        bool IsValid(int x, int y)
+        {
+            return (x >= 0 && x < this->Dimensions.X && y >= 0 && y < this->Dimensions.Y);
+        }
+
+        bool IsValid(Point point)
+        {
+            return this->IsValid(point.X, point.Y);
+        }
+
+        Points Neighbors()
+        {
+            return this->Flat ? Hex::FlatNeighbors : Hex::PointyNeighbors;
+        }
+
+        Points Neighbors(int x, int y)
+        {
+            auto neighbors = Points();
+
+            for (auto neighbor : this->Neighbors())
+            {
+                auto point = Point(x, y) + neighbor;
+
+                if (this->IsValid(point))
+                {
+                    neighbors.push_back(point);
+                }
+            }
+
+            return neighbors;
+        }
+
+        Points Neighbors(Point point)
+        {
+            return this->Neighbors(point.X, point.Y);
         }
     };
 }
