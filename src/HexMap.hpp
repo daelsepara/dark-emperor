@@ -281,21 +281,25 @@ namespace Hex
             return (*this)(cube.Q, cube.R, cube.S);
         }
 
+        // is (x, y) within map bounds?
         bool IsValid(int x, int y)
         {
             return (x >= 0 && x < this->Dimensions.X && y >= 0 && y < this->Dimensions.Y);
         }
 
+        // is the point within map bounds?
         bool IsValid(Point point)
         {
             return this->IsValid(point.X, point.Y);
         }
 
+        // return set of neighbors
         Points Neighbors(bool is_odd = false)
         {
             return this->Flat ? (is_odd ? Hex::FlatNeighborsOdd : Hex::FlatNeighbors) : (is_odd ? Hex::PointyNeighborsOdd : Hex::PointyNeighbors);
         }
 
+        // get all valid neighbors of point (x, y)
         Points Neighbors(int x, int y)
         {
             auto is_odd = this->Flat ? ((x & 1) != 0) : ((y & 1) != 0);
@@ -315,9 +319,39 @@ namespace Hex
             return neighbors;
         }
 
+        // get all valid neighbors of the point
         Points Neighbors(Point point)
         {
             return this->Neighbors(point.X, point.Y);
+        }
+
+        // calculate distance between two points using cube coordinates
+        int Distance(int x0, int y0, int x1, int y1)
+        {
+            auto distance = -1;
+
+            if (this->IsValid(x0, y0) && this->IsValid(x1, y1))
+            {
+                auto &src = this->Tiles[y0][x0].Hex;
+
+                auto &dst = this->Tiles[y1][x1].Hex;
+
+                auto q = std::abs(src.Q - dst.Q);
+
+                auto r = std::abs(src.R - dst.R);
+
+                auto s = std::abs(src.S - dst.S);
+
+                distance = (q + r + s) / 2;
+            }
+
+            return distance;
+        }
+
+        // calculate distance between two points
+        int Distance(Point src, Point dst)
+        {
+            return this->Distance(src.X, src.Y, dst.X, dst.Y);
         }
     };
 }
