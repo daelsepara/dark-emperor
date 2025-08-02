@@ -101,15 +101,72 @@ namespace Hex::Graphics
         return graphics;
     }
 
+    void SetRenderDrawColor(Graphics::Base &graphics, Uint32 color)
+    {
+        SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+    }
+
     // fill entire screen with specified color
     void FillWindow(Graphics::Base &graphics, Uint32 color)
     {
         if (graphics.Renderer)
         {
-            SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+            Graphics::SetRenderDrawColor(graphics, color);
 
             SDL_RenderClear(graphics.Renderer);
         }
+    }
+
+    // assign dimensions to SDL_Rect dimensions
+    void Dimensions(SDL_Rect &rect, int w, int h)
+    {
+        rect.w = w;
+
+        rect.h = h;
+    }
+
+    // copy dimensions between SDL_Rect
+    void Dimensions(SDL_Rect &rect, SDL_Rect &src)
+    {
+        Graphics::Dimensions(rect, src.w, src.h);
+    }
+
+    // assign point to SDL_Rect coordinates
+    void Assign(SDL_Rect &rect, int x, int y)
+    {
+        rect.x = x;
+
+        rect.y = y;
+    }
+
+    // assign point to SDL_Rect coordinates
+    void Assign(SDL_Rect &rect, Point point)
+    {
+        Graphics::Assign(rect, point.X, point.Y);
+    }
+
+    // assign point to SDL_Point coordinates
+    void Assign(SDL_Point &point, int x, int y)
+    {
+        point.x = x;
+
+        point.y = y;
+    }
+
+    // assign point to SDL_Point coordinates
+    void Assign(SDL_Point &sdl_point, Point point)
+    {
+        Graphics::Assign(sdl_point, point.X, point.Y);
+    }
+
+    // convert Point to SDL_Point
+    SDL_Point Convert(Point point)
+    {
+        SDL_Point sdl_point;
+
+        Graphics::Assign(sdl_point, point);
+
+        return sdl_point;
     }
 
     // add scan lines to display
@@ -117,21 +174,22 @@ namespace Hex::Graphics
     {
         if (ScanLinesEnabled)
         {
-            SDL_Rect scanline;
+            SDL_Point scanline[2];
 
-            scanline.w = graphics.Width;
+            Graphics::Assign(scanline[0], 0, 0);
 
-            scanline.h = 1;
+            Graphics::Assign(scanline[1], graphics.Width, 0);
 
-            scanline.x = 0;
-
-            SDL_SetRenderDrawColor(graphics.Renderer, 0, 0, 0, 0x40);
+            // Uint32 color format: AARRGGBB
+            Graphics::SetRenderDrawColor(graphics, 0x40000000);
 
             for (auto i = 0; i < graphics.Height; i += 2)
             {
-                scanline.y = i + 1;
+                scanline[0].y = i + 1;
 
-                SDL_RenderFillRect(graphics.Renderer, &scanline);
+                scanline[1].y = i + 1;
+
+                SDL_RenderDrawLines(graphics.Renderer, scanline, 2);
             }
         }
     }
@@ -153,17 +211,13 @@ namespace Hex::Graphics
     {
         SDL_Rect rect;
 
-        rect.w = w;
+        Graphics::Dimensions(rect, w, h);
 
-        rect.h = h;
-
-        rect.x = x;
-
-        rect.y = y;
+        Graphics::Assign(rect, x, y);
 
         if (graphics.Renderer)
         {
-            SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+            Graphics::SetRenderDrawColor(graphics, color);
         }
 
         return rect;
@@ -186,18 +240,6 @@ namespace Hex::Graphics
         Graphics::DrawRect(graphics, w, h, point.X, point.Y, color);
     }
 
-    // convert Point to SDL_Point
-    SDL_Point Convert(Point point)
-    {
-        SDL_Point sdl_point;
-
-        sdl_point.x = point.X;
-
-        sdl_point.y = point.Y;
-
-        return sdl_point;
-    }
-
     // draw line
     void DrawLine(Base &graphics, Point start, Point end, Point offset, Uint32 color)
     {
@@ -208,7 +250,7 @@ namespace Hex::Graphics
 
         points[1] = Graphics::Convert(end + offset);
 
-        SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
+        Graphics::SetRenderDrawColor(graphics, color);
 
         SDL_RenderDrawLines(graphics.Renderer, points, 2);
     }
@@ -294,24 +336,19 @@ namespace Hex::Graphics
         SDL_Rect src, dst;
 
         // render one line from texture (horizontal or vertical)
-        src.w = (end.X == start.X) ? 1 : (end.X - start.X);
+        Graphics::Dimensions(src, (end.X == start.X) ? 1 : (end.X - start.X), (end.Y == start.Y) ? 1 : (end.Y - start.Y));
 
-        src.h = (end.Y == start.Y) ? 1 : (end.Y - start.Y);
+        Graphics::Assign(src, start);
 
-        src.x = start.X;
+        Graphics::Dimensions(dst, src);
 
-        src.y = start.Y;
+        Graphics::Assign(dst, offset + start);
 
-        dst.w = src.w;
-
-        dst.h = src.h;
-
-        dst.x = offset.X + start.X;
-
-        dst.y = offset.Y + start.Y;
-
-        // copy one line of the texture (src) into a new location (dst)
-        SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
+        if (texture)
+        {
+            // copy one line of the texture (src) into a new location (dst)
+            SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
+        }
     }
 
     // render hex line by line within boundary (start, end)
@@ -375,25 +412,17 @@ namespace Hex::Graphics
         {
             SDL_Rect src, dst;
 
-            src.w = texture_w;
+            Graphics::Dimensions(src, texture_w, std::min(texture_h, bounds));
 
-            src.h = std::min(texture_h, bounds);
+            Graphics::Assign(src, 0, offset);
 
-            src.y = offset;
+            Graphics::Dimensions(dst, w, h);
 
-            src.x = 0;
-
-            dst.w = w;
-
-            dst.h = h;
-
-            dst.x = x;
-
-            dst.y = y;
+            Graphics::Assign(dst, x, y);
 
             if (background != 0)
             {
-                SDL_SetRenderDrawColor(graphics.Renderer, Color::R(background), Color::G(background), Color::B(background), Color::A(background));
+                Graphics::SetRenderDrawColor(graphics, background);
 
                 SDL_RenderFillRect(graphics.Renderer, &dst);
             }
