@@ -352,9 +352,26 @@ namespace Hex::Graphics
     }
 
     // render hex line by line within boundary (start, end)
+    void RenderHex(Base &graphics, SDL_Texture *texture, Points &start, Points &end, Point offset, Uint32 color)
+    {
+        // render texture / lines
+        for (auto i = 0; i < std::min(start.size(), end.size()); i++)
+        {
+            if (texture)
+            {
+                Graphics::RenderLineTexture(graphics, texture, start[i], end[i], offset);
+            }
+            else
+            {
+                Graphics::DrawLine(graphics, start[i], end[i], offset, color);
+            }
+        }
+    }
+
+    // render hex line by line within boundary (start, end)
     void RenderHex(Base &graphics, SDL_Texture *texture, Points hex, Point offset, Uint32 color, bool flat)
     {
-        // determine rendering method: flat (top to bottom) or pointy (left to right)
+        // determine rendering order: flat (top to bottom) or pointy (left to right)
 
         // side1, side2 => flat (top to midddle), pointy (left to middle)
         auto side1 = flat ? Graphics::Line(hex[4], hex[3]) : Graphics::Line(hex[4], hex[5]);
@@ -367,30 +384,10 @@ namespace Hex::Graphics
         auto side4 = flat ? Graphics::Line(hex[0], hex[1]) : Graphics::Line(hex[2], hex[1]);
 
         // render texture / lines on first half of the hex
-        for (auto i = 0; i < std::min(side1.size(), side2.size()); i++)
-        {
-            if (texture)
-            {
-                Graphics::RenderLineTexture(graphics, texture, side1[i], side2[i], offset);
-            }
-            else
-            {
-                Graphics::DrawLine(graphics, side1[i], side2[i], offset, color);
-            }
-        }
+        Graphics::RenderHex(graphics, texture, side1, side2, offset, color);
 
         // render texture / lines on second half of the hex
-        for (auto i = 0; i < std::min(side3.size(), side4.size()); i++)
-        {
-            if (texture)
-            {
-                Graphics::RenderLineTexture(graphics, texture, side3[i], side4[i], offset);
-            }
-            else
-            {
-                Graphics::DrawLine(graphics, side3[i], side4[i], offset, color);
-            }
-        }
+        Graphics::RenderHex(graphics, texture, side3, side4, offset, color);
     }
 
     // draw a filled hex
