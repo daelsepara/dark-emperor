@@ -110,7 +110,11 @@ namespace Hex
 
     const Points FlatNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 0}, {-1, -1}};
 
-    const Points PointyNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 1}, {-1, 0}};
+    const Points FlatNeighborsOdd = {{0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}};
+
+    const Points PointyNeighbors = {{-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}, {-1, 0}};
+
+    const Points PointyNeighborsOdd = {{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
 
     Point Corner(Point center, int size, int corner, bool flat = false)
     {
@@ -287,16 +291,18 @@ namespace Hex
             return this->IsValid(point.X, point.Y);
         }
 
-        Points Neighbors()
+        Points Neighbors(bool is_odd = false)
         {
-            return this->Flat ? Hex::FlatNeighbors : Hex::PointyNeighbors;
+            return this->Flat ? (is_odd ? Hex::FlatNeighborsOdd : Hex::FlatNeighbors) : (is_odd ? Hex::PointyNeighborsOdd : Hex::PointyNeighbors);
         }
 
         Points Neighbors(int x, int y)
         {
+            auto is_odd = this->Flat ? ((x & 1) != 0) : ((y & 1) != 0);
+
             auto neighbors = Points();
 
-            for (auto neighbor : this->Neighbors())
+            for (auto neighbor : this->Neighbors(is_odd))
             {
                 auto point = Point(x, y) + neighbor;
 
