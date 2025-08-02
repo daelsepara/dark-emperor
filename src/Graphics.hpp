@@ -186,19 +186,27 @@ namespace Hex::Graphics
         Graphics::DrawRect(graphics, w, h, point.X, point.Y, color);
     }
 
+    // convert Point to SDL_Point
+    SDL_Point Convert(Point point)
+    {
+        SDL_Point sdl_point;
+
+        sdl_point.x = point.X;
+
+        sdl_point.y = point.Y;
+
+        return sdl_point;
+    }
+
     // draw line
     void DrawLine(Base &graphics, Point start, Point end, Point offset, Uint32 color)
     {
         SDL_Point points[2];
 
         // translate points using offset and convert to SDL's point formats
-        points[0].x = start.X + offset.X;
+        points[0] = Graphics::Convert(start + offset);
 
-        points[0].y = start.Y + offset.Y;
-
-        points[1].x = end.X + offset.X;
-
-        points[1].y = end.Y + offset.Y;
+        points[1] = Graphics::Convert(end + offset);
 
         SDL_SetRenderDrawColor(graphics.Renderer, Color::R(color), Color::G(color), Color::B(color), Color::A(color));
 
