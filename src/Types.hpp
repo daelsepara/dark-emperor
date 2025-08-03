@@ -21,6 +21,37 @@ namespace Hex
         BATTLEFIELD
     };
 
+    std::vector<TerrainType> GroundPassable = {
+        CITY,
+        CAPITAL_CITY,
+        MOUNTAIN,
+        RIVER,
+        PORT,
+        HOLY_PLACE,
+        SETTLED,
+        MAGIC_HEX,
+        BATTLEFIELD};
+
+    std::vector<TerrainType> NavalPassable = {
+        RIVER,
+        PORT,
+        SEA,
+        HOLY_PLACE,
+        MAGIC_HEX,
+        BATTLEFIELD};
+
+    std::vector<TerrainType> AirPassable = {
+        CITY,
+        CAPITAL_CITY,
+        MOUNTAIN,
+        RIVER,
+        SEA,
+        PORT,
+        HOLY_PLACE,
+        SETTLED,
+        MAGIC_HEX,
+        BATTLEFIELD};
+
     enum class UnitType
     {
         NONE = -1,
@@ -36,7 +67,15 @@ namespace Hex
         FLAME
     };
 
-    typedef std::vector<UnitType> Units;
+    typedef struct UnitId
+    {
+        int Id = -1;
+
+        UnitType Type = UnitType::NONE;
+
+    } UnitId;
+
+    typedef std::vector<UnitId> Units;
 
     enum class RuneType
     {

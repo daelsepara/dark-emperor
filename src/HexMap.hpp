@@ -177,9 +177,8 @@ namespace Hex
 
         TerrainType Terrain = TerrainType::NONE;
 
+        // units occupying current tile (id, type)
         Units Units = {};
-
-        Integers UnitId = {};
 
         void Initialize(int x, int y, bool flat)
         {
