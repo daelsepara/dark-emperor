@@ -7,7 +7,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "HexMap.hpp"
+#include "Map.hpp"
 #include "Primitives.hpp"
 
 #ifdef SDL_HINT_RENDER_LINE_METHOD

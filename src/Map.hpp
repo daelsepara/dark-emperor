@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 
+#include "Color.hpp"
 #include "Types.hpp"
 #include "Unit.hpp"
 
@@ -287,51 +288,48 @@ namespace DarkEmperor
             return (this->Terrain == TerrainType::NONE);
         }
 
-        // kingdom of (first) units occupying space
-        Kingdom Forces(Kingdom kingdom)
+        // check if cell is not occupied by any units
+        bool NotOccupied()
         {
-            auto forces = Kingdom::NONE;
+            return (this->Units.size() == 0);
+        }
+
+        // count other units belonging to "kingdom"
+        int Count(Kingdom kingdom)
+        {
+            auto count = 0;
 
             for (auto unit : this->Units)
             {
-                if (unit.Id != -1 && unit.Type != UnitType::NONE && unit.Kingdom != Kingdom::NONE)
-                {
-                    if (unit.Kingdom == kingdom)
-                    {
-                        forces = kingdom;
-
-                        break;
-                    }
-                    else if (forces == Kingdom::NONE)
-                    {
-                        forces = unit.Kingdom;
-                    }
-                }
+                count += (unit.Kingdom != Kingdom::NONE && unit.Kingdom == kingdom ? 1 : 0);
             }
 
-            return forces;
+            return count;
         }
 
-        // check if there are no occupying force in the space
-        bool NotOccupied()
+        // count other units belonging to "kingdom"
+        int Count()
         {
-            return this->Forces(Kingdom::NONE) == Kingdom::NONE;
+            return this->Count(this->Owner);
         }
 
-        // check if space is empty or occupied by friendly forces
-        bool IsFriendly(Kingdom kingdom)
+        // count other units not belonging to "kingdom"
+        int Others(Kingdom kingdom)
         {
-            auto forces = this->Forces(kingdom);
+            auto count = 0;
 
-            return (forces == Kingdom::NONE || forces == kingdom);
+            for (auto unit : this->Units)
+            {
+                count += (unit.Kingdom != Kingdom::NONE && unit.Kingdom != kingdom ? 1 : 0);
+            }
+
+            return count;
         }
 
-        // check if space is occupied by another fore
-        bool IsOccupied(Kingdom kingdom)
+        // count other units
+        int Others()
         {
-            auto forces = this->Forces(kingdom);
-
-            return forces != Kingdom::NONE && forces != kingdom;
+            return this->Others(this->Owner);
         }
     };
 

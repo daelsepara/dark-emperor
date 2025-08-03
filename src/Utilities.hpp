@@ -1,10 +1,10 @@
-#ifndef __ENGINE_HPP__
-#define __ENGINE_HPP__
+#ifndef __UTILITIES_HPP__
+#define __UTILITIES_HPP__
 
 #include <algorithm>
 #include <string>
 
-namespace DarkEmperor::Engine
+namespace DarkEmperor::Utilities
 {
     // change string case using input transform function (functptr)
     // see: https://www.geeksforgeeks.org/function-pointer-in-cpp/
@@ -20,9 +20,9 @@ namespace DarkEmperor::Engine
     // compares two strings
     bool Compare(std::string s1, std::string s2, int (*funcptr)(int))
     {
-        Engine::ChangeCase(s1, funcptr);
+        Utilities::ChangeCase(s1, funcptr);
 
-        Engine::ChangeCase(s2, funcptr);
+        Utilities::ChangeCase(s2, funcptr);
 
         return (s1.compare(s2) == 0);
     }
@@ -30,13 +30,13 @@ namespace DarkEmperor::Engine
     // changes all of the characters in the string to upper case
     std::string ToUpper(std::string str)
     {
-        return Engine::ChangeCase(str, ::toupper);
+        return Utilities::ChangeCase(str, ::toupper);
     }
 
     // changes all of the characters in the string to lower case
     std::string ToLower(std::string str)
     {
-        return Engine::ChangeCase(str, ::tolower);
+        return Utilities::ChangeCase(str, ::tolower);
     }
 }
 

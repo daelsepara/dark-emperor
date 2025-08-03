@@ -1,7 +1,7 @@
 #ifndef __MOVE_HPP__
 #define __MOVE_HPP__
 
-#include "HexMap.hpp"
+#include "Map.hpp"
 #include "Random.hpp"
 
 namespace DarkEmperor::Move

@@ -1,7 +1,7 @@
-#include "Engine.hpp"
-#include "Graphics.hpp"
-#include "HexMap.hpp"
 #include "Asset.hpp"
+#include "Graphics.hpp"
+#include "Map.hpp"
+#include "Utilities.hpp"
 
 namespace DarkEmperor
 {
@@ -240,13 +240,13 @@ int main(int argc, char **argv)
 
     auto size = std::atoi(argv[3]);
 
-    auto flat = DarkEmperor::Engine::ToUpper(argv[4]) == "FLAT";
+    auto flat = DarkEmperor::Utilities::ToUpper(argv[4]) == "FLAT";
 
-    auto blind = DarkEmperor::Engine::ToUpper(argv[5]) == "BLIND";
+    auto blind = DarkEmperor::Utilities::ToUpper(argv[5]) == "BLIND";
 
-    auto new_textures = DarkEmperor::Engine::ToUpper(argv[6]) == "NEW";
+    auto new_textures = DarkEmperor::Utilities::ToUpper(argv[6]) == "NEW";
 
-    auto crop = DarkEmperor::Engine::ToUpper(argv[6]) == "CROP";
+    auto crop = DarkEmperor::Utilities::ToUpper(argv[6]) == "CROP";
 
     DarkEmperor::Main(width, height, size, flat, blind, new_textures, crop);
 
