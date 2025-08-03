@@ -4,8 +4,12 @@
 #include <cmath>
 #include <vector>
 
+#include "Types.hpp"
+
 namespace Hex
 {
+    typedef std::vector<int> Integers;
+
     const double Scale = std::sqrt(3.0);
 
     const double Offset = 3.0 / 2.0;
@@ -162,11 +166,20 @@ namespace Hex
     class Tile
     {
     public:
+        // hex number
+        int Id = -1;
+
         // square grid coordinates
         Point Point;
 
         // cube coordinates
         Cube Hex;
+
+        TerrainType Terrain = TerrainType::NONE;
+
+        Units Units = {};
+
+        Integers UnitId = {};
 
         void Initialize(int x, int y, bool flat)
         {
@@ -188,6 +201,13 @@ namespace Hex
         {
             this->Initialize(x, y, flat);
         }
+
+        Tile(int id, int x, int y, bool flat) : Id(id)
+        {
+            this->Initialize(x, y, flat);
+        }
+
+        Tile(int id, int x, int y) : Tile(id, x, y, true) {}
 
         Tile(int x, int y) : Tile(x, y, true) {}
 
@@ -291,6 +311,31 @@ namespace Hex
         bool IsValid(Point point)
         {
             return this->IsValid(point.X, point.Y);
+        }
+
+        Point operator[](int id)
+        {
+            auto point = Point(-1, -1);
+
+            for (auto y = 0; y < this->Tiles.size(); y++)
+            {
+                for (auto x = 0; x < this->Tiles[y].size(); x++)
+                {
+                    if (this->Tiles[y][x].Id == id)
+                    {
+                        point = Point(x, y);
+
+                        break;
+                    }
+                }
+
+                if (point != Point(-1, -1))
+                {
+                    break;
+                }
+            }
+
+            return point;
         }
 
         // return set of neighbors
