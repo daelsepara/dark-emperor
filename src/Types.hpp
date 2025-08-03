@@ -22,35 +22,35 @@ namespace Hex
     };
 
     std::vector<TerrainType> GroundPassable = {
-        CITY,
-        CAPITAL_CITY,
-        MOUNTAIN,
-        RIVER,
-        PORT,
-        HOLY_PLACE,
-        SETTLED,
-        MAGIC_HEX,
-        BATTLEFIELD};
+        TerrainType::CITY,
+        TerrainType::CAPITAL_CITY,
+        TerrainType::MOUNTAIN,
+        TerrainType::RIVER,
+        TerrainType::PORT,
+        TerrainType::HOLY_PLACE,
+        TerrainType::SETTLED,
+        TerrainType::MAGIC_HEX,
+        TerrainType::BATTLEFIELD};
 
     std::vector<TerrainType> NavalPassable = {
-        RIVER,
-        PORT,
-        SEA,
-        HOLY_PLACE,
-        MAGIC_HEX,
-        BATTLEFIELD};
+        TerrainType::RIVER,
+        TerrainType::PORT,
+        TerrainType::SEA,
+        TerrainType::HOLY_PLACE,
+        TerrainType::MAGIC_HEX,
+        TerrainType::BATTLEFIELD};
 
     std::vector<TerrainType> AirPassable = {
-        CITY,
-        CAPITAL_CITY,
-        MOUNTAIN,
-        RIVER,
-        SEA,
-        PORT,
-        HOLY_PLACE,
-        SETTLED,
-        MAGIC_HEX,
-        BATTLEFIELD};
+        TerrainType::CITY,
+        TerrainType::CAPITAL_CITY,
+        TerrainType::MOUNTAIN,
+        TerrainType::RIVER,
+        TerrainType::SEA,
+        TerrainType::PORT,
+        TerrainType::HOLY_PLACE,
+        TerrainType::SETTLED,
+        TerrainType::MAGIC_HEX,
+        TerrainType::BATTLEFIELD};
 
     enum class UnitType
     {
