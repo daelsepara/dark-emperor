@@ -176,17 +176,20 @@ namespace DarkEmperor
 
         TerrainType Terrain = TerrainType::NONE;
 
-        // units occupying current tile (id, type, nationality)
+        // units occupying current tile (id, type, kingdom)
         UnitIds Units = {};
 
         // stacking limit
-        int Limit = 0;
+        int StackLimit = 0;
+
+        // attrition cost
+        int Attrition = 0;
 
         // city value
         int CityValue = 0;
 
         // current owner
-        Nationality Owner = Nationality::NONE;
+        Kingdom Owner = Kingdom::NONE;
 
         // asset number
         int Asset = -1;
@@ -247,7 +250,7 @@ namespace DarkEmperor
         // can fit stack of size
         bool CanFitStack(int size)
         {
-            auto limit = this->Limit + (this->IsCity() ? this->CityValue : 0);
+            auto limit = this->StackLimit + (this->IsCity() ? this->CityValue : 0);
 
             return size <= (limit - this->CurrentStack());
         }
@@ -284,24 +287,24 @@ namespace DarkEmperor
             return (this->Terrain == TerrainType::NONE);
         }
 
-        // nationality of (first) units occupying space
-        Nationality Forces(Nationality nationality)
+        // kingdom of (first) units occupying space
+        Kingdom Forces(Kingdom kingdom)
         {
-            auto forces = Nationality::NONE;
+            auto forces = Kingdom::NONE;
 
             for (auto unit : this->Units)
             {
-                if (unit.Id != -1 && unit.Type != UnitType::NONE && unit.Nationality != Nationality::NONE)
+                if (unit.Id != -1 && unit.Type != UnitType::NONE && unit.Kingdom != Kingdom::NONE)
                 {
-                    if (unit.Nationality == nationality)
+                    if (unit.Kingdom == kingdom)
                     {
-                        forces = nationality;
+                        forces = kingdom;
 
                         break;
                     }
-                    else if (forces == Nationality::NONE)
+                    else if (forces == Kingdom::NONE)
                     {
-                        forces = unit.Nationality;
+                        forces = unit.Kingdom;
                     }
                 }
             }
@@ -312,23 +315,23 @@ namespace DarkEmperor
         // check if there are no occupying force in the space
         bool NotOccupied()
         {
-            return this->Forces(Nationality::NONE) == Nationality::NONE;
+            return this->Forces(Kingdom::NONE) == Kingdom::NONE;
         }
 
         // check if space is empty or occupied by friendly forces
-        bool IsFriendly(Nationality nationality)
+        bool IsFriendly(Kingdom kingdom)
         {
-            auto forces = this->Forces(nationality);
+            auto forces = this->Forces(kingdom);
 
-            return (forces == Nationality::NONE || forces == nationality);
+            return (forces == Kingdom::NONE || forces == kingdom);
         }
 
         // check if space is occupied by another fore
-        bool IsOccupied(Nationality nationality)
+        bool IsOccupied(Kingdom kingdom)
         {
-            auto forces = this->Forces(nationality);
+            auto forces = this->Forces(kingdom);
 
-            return forces != Nationality::NONE && forces != nationality;
+            return forces != Kingdom::NONE && forces != kingdom;
         }
     };
 

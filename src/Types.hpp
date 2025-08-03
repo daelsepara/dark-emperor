@@ -15,6 +15,7 @@ namespace DarkEmperor
         CAPITAL_CITY,
         MOUNTAIN,
         RIVER,
+        COASTAL,
         SEA,
         PORT,
         HOLY_PLACE,
@@ -27,6 +28,7 @@ namespace DarkEmperor
         TerrainType::CITY,
         TerrainType::CAPITAL_CITY,
         TerrainType::MOUNTAIN,
+        TerrainType::COASTAL,
         TerrainType::RIVER,
         TerrainType::PORT,
         TerrainType::HOLY_PLACE,
@@ -37,6 +39,7 @@ namespace DarkEmperor
     List<TerrainType> NavalPassable = {
         TerrainType::RIVER,
         TerrainType::PORT,
+        TerrainType::COASTAL,
         TerrainType::SEA,
         TerrainType::HOLY_PLACE,
         TerrainType::MAGIC_HEX,
@@ -47,6 +50,7 @@ namespace DarkEmperor
         TerrainType::CAPITAL_CITY,
         TerrainType::MOUNTAIN,
         TerrainType::RIVER,
+        TerrainType::COASTAL,
         TerrainType::SEA,
         TerrainType::PORT,
         TerrainType::HOLY_PLACE,
@@ -84,7 +88,7 @@ namespace DarkEmperor
         SERENITY
     };
 
-    enum class Nationality
+    enum class Kingdom
     {
         NONE = -1,
         NECROMANCER,
@@ -100,14 +104,14 @@ namespace DarkEmperor
         ZOLAHAURESLOR
     };
 
-    // individual unit id (id, type, nationality)
+    // individual unit id (id, type, kingdom)
     typedef struct UnitId
     {
         int Id = -1;
 
         UnitType Type = UnitType::NONE;
 
-        Nationality Nationality = Nationality::NONE;
+        Kingdom Kingdom = Kingdom::NONE;
 
     } UnitId;
 
@@ -117,8 +121,8 @@ namespace DarkEmperor
     // for unit-stacking in the map
     typedef struct UnitStack
     {
-        // nationality
-        Nationality Nationality = Nationality::NONE;
+        // kingdoms
+        Kingdom Kingdom = Kingdom::NONE;
 
         // lowest unit type denominator (e.g. GROUND, AIR, NAVAL)
         UnitType Type = UnitType::NONE;
@@ -167,6 +171,21 @@ namespace DarkEmperor
         SILWER_FLAGRIEL,
         FERNAN_CONNIVER
     };
+
+    // default terrain stack limits
+    UnorderedMap<TerrainType, int> TerrainStackLimits = {
+        {TerrainType::NONE, 0},
+        {TerrainType::CITY, 4},
+        {TerrainType::CAPITAL_CITY, 4},
+        {TerrainType::MOUNTAIN, 2},
+        {TerrainType::RIVER, 4},
+        {TerrainType::COASTAL, 4},
+        {TerrainType::SEA, 4},
+        {TerrainType::PORT, 4},
+        {TerrainType::HOLY_PLACE, 4},
+        {TerrainType::SETTLED, 4},
+        {TerrainType::MAGIC_HEX, 4},
+        {TerrainType::BATTLEFIELD, 4}};
 }
 
 #endif

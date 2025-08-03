@@ -10,7 +10,7 @@ namespace DarkEmperor::Unit
     public:
         UnitType Type = UnitType::NONE;
 
-        Nationality Nationality = Nationality::NONE;
+        Kingdom Kingdom = Kingdom::NONE;
 
         int Id = -1;
 
