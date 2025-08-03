@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string>
 
-namespace Hex::Engine
+namespace DarkEmperor::Engine
 {
     // change string case using input transform function (functptr)
     // see: https://www.geeksforgeeks.org/function-pointer-in-cpp/

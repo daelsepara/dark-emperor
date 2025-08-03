@@ -16,7 +16,7 @@
 
 #define SDL_HINT_RENDER_LINE_METHOD "2"
 
-namespace Hex::Graphics
+namespace DarkEmperor::Graphics
 {
     // horizontal scan lines toggle
     bool ScanLinesEnabled = true;
@@ -444,7 +444,7 @@ namespace Hex::Graphics
 
         auto texture_h = 0;
 
-        Hex::Size(texture, &texture_w, &texture_h);
+        DarkEmperor::Size(texture, &texture_w, &texture_h);
 
         Graphics::RenderTexture(graphics, texture, texture_w, texture_h, x, y);
     }

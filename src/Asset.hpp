@@ -3,14 +3,14 @@
 
 #include "Primitives.hpp"
 
-namespace Hex::Asset
+namespace DarkEmperor::Asset
 {
     // create texture from a file
     SDL_Texture *Create(SDL_Renderer *renderer, const char *path)
     {
         SDL_Texture *texture = nullptr;
 
-        auto surface = Hex::Load(path);
+        auto surface = DarkEmperor::Load(path);
 
         if (surface)
         {
@@ -23,7 +23,7 @@ namespace Hex::Asset
                 SDL_SetTextureColorMod(texture, Color::R(Color::Active), Color::G(Color::Active), Color::B(Color::Active));
             }
 
-            Hex::Free(&surface);
+            DarkEmperor::Free(&surface);
         }
 
         return texture;

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace Hex
+namespace DarkEmperor
 {
     // terrain
     enum class TerrainType
@@ -67,16 +67,6 @@ namespace Hex
         FLAME
     };
 
-    typedef struct UnitId
-    {
-        int Id = -1;
-
-        UnitType Type = UnitType::NONE;
-
-    } UnitId;
-
-    typedef std::vector<UnitId> Units;
-
     enum class RuneType
     {
         NONE = -1,
@@ -107,6 +97,34 @@ namespace Hex
         AHAUTSIERON,
         ZOLAHAURESLOR
     };
+
+    // individual unit id (id, type, nationality)
+    typedef struct UnitId
+    {
+        int Id = -1;
+
+        UnitType Type = UnitType::NONE;
+
+        Nationality Nationality = Nationality::NONE;
+
+    } UnitId;
+
+    // unit id collection
+    typedef std::vector<UnitId> Units;
+
+    // for unit-stacking in the map
+    typedef struct UnitStack
+    {
+        // nationality
+        Nationality Nationality = Nationality::NONE;
+
+        // lowest unit type denominator (e.g. GROUND, AIR, NAVAL)
+        UnitType Type = UnitType::NONE;
+
+        // actual unit composition
+        Units Units = {};
+
+    } UnitStack;
 
     enum class Leader
     {

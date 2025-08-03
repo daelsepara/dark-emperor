@@ -5,11 +5,10 @@
 #include <vector>
 
 #include "Types.hpp"
+#include "Templates.hpp"
 
-namespace Hex
+namespace DarkEmperor
 {
-    typedef std::vector<int> Integers;
-
     const double Scale = std::sqrt(3.0);
 
     const double Offset = 3.0 / 2.0;
@@ -177,12 +176,18 @@ namespace Hex
 
         TerrainType Terrain = TerrainType::NONE;
 
-        // units occupying current tile (id, type)
+        // units occupying current tile (id, type, nationality)
         Units Units = {};
+
+        // stacking limit
+        int Limit = 0;
+
+        // city value
+        int CityValue = 0;
 
         void Initialize(int x, int y, bool flat)
         {
-            this->Point = Hex::Point(x, y);
+            this->Point = DarkEmperor::Point(x, y);
 
             auto parity = (flat ? this->Point.X : this->Point.Y) & 1;
 
@@ -213,6 +218,89 @@ namespace Hex
         Tile() {}
 
         bool IsValid() { return this->Hex.IsValid(); }
+
+        int Stack()
+        {
+            return (int)(Units.size());
+        }
+
+        // check if location is traversable or if it is the target destination
+        bool IsPassable(UnitType type)
+        {
+            auto passable = false;
+
+            switch (type)
+            {
+            case UnitType::GROUND:
+                passable = DarkEmperor::In(DarkEmperor::GroundPassable, this->Terrain);
+                break;
+            case UnitType::NAVAL:
+                passable = DarkEmperor::In(DarkEmperor::NavalPassable, this->Terrain);
+                break;
+            case UnitType::AIR:
+                passable = DarkEmperor::In(DarkEmperor::AirPassable, this->Terrain);
+                break;
+            case UnitType::LEADER:
+                passable = DarkEmperor::In(DarkEmperor::AirPassable, this->Terrain);
+                break;
+            default:
+                break;
+            }
+
+            return passable;
+        }
+
+        bool IsBlocked()
+        {
+            return (this->Terrain == TerrainType::NONE);
+        }
+
+        // nationality of (first) units occupying space
+        Nationality Forces(Nationality nationality)
+        {
+            auto forces = Nationality::NONE;
+
+            for (auto unit : this->Units)
+            {
+                if (unit.Id != -1 && unit.Type != UnitType::NONE && unit.Nationality != Nationality::NONE)
+                {
+                    if (unit.Nationality == nationality)
+                    {
+                        forces = nationality;
+
+                        break;
+                    }
+                    else if (forces == Nationality::NONE)
+                    {
+                        forces = unit.Nationality;
+                    }
+                }
+            }
+
+            return forces;
+        }
+
+        // check if there are no occupying force in the space
+        bool NotOccupied()
+        {
+            return this->Forces(Nationality::NONE) == Nationality::NONE;
+        }
+
+        // check if space is empty or occupied by friendly forces
+        bool IsFriendly(Nationality nationality)
+        {
+            auto forces = this->Forces(nationality);
+
+            return (forces == Nationality::NONE || forces == nationality);
+        }
+
+        // check if space is occupied by another fore
+        bool IsOccupied(Nationality nationality)
+        {
+            auto forces = this->Forces(nationality);
+
+            return forces != Nationality::NONE && forces != nationality;
+        }
     };
 
     class Map
@@ -237,11 +325,11 @@ namespace Hex
         int Size;
 
         // tiles comprising the map
-        std::vector<std::vector<Tile>> Tiles = {};
+        Array<Tile> Tiles = {};
 
         Map(int width, int height, int size, bool flat) : Dimensions(width, height), Flat(flat), Size(size)
         {
-            this->Tiles = std::vector(height, std::vector(width, Hex::Tile()));
+            this->Tiles = std::vector(height, std::vector(width, DarkEmperor::Tile()));
 
             for (auto y = 0; y < height; y++)
             {
@@ -340,7 +428,7 @@ namespace Hex
         // return set of neighbors
         Points Neighbors(bool is_odd = false)
         {
-            return this->Flat ? (is_odd ? Hex::FlatNeighborsOdd : Hex::FlatNeighbors) : (is_odd ? Hex::PointyNeighborsOdd : Hex::PointyNeighbors);
+            return this->Flat ? (is_odd ? DarkEmperor::FlatNeighborsOdd : DarkEmperor::FlatNeighbors) : (is_odd ? DarkEmperor::PointyNeighborsOdd : DarkEmperor::PointyNeighbors);
         }
 
         // get all valid neighbors of point (x, y)

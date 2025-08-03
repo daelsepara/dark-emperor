@@ -3,36 +3,36 @@
 #include "HexMap.hpp"
 #include "Asset.hpp"
 
-namespace Hex
+namespace DarkEmperor
 {
     void Main(int width, int height, int size, bool flat, bool blind, bool new_textures, bool crop)
     {
         auto graphics = Graphics::Initialize("Hex Test");
 
-        auto texture = Hex::Create(graphics.Renderer, "images/ninja-head.png");
+        auto texture = DarkEmperor::Create(graphics.Renderer, "images/ninja-head.png");
 
-        auto texture_w = Hex::Width(texture);
+        auto texture_w = DarkEmperor::Width(texture);
 
-        auto texture_h = Hex::Height(texture);
+        auto texture_h = DarkEmperor::Height(texture);
 
         SDL_Texture *terrain = nullptr;
 
         if (new_textures)
         {
-            terrain = Hex::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
+            terrain = DarkEmperor::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
         }
         else if (crop)
         {
-            terrain = Hex::Create(graphics.Renderer, "images/desert.png");
+            terrain = DarkEmperor::Create(graphics.Renderer, "images/desert.png");
         }
         else
         {
-            terrain = Hex::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+            terrain = DarkEmperor::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
         }
 
-        auto terrain_w = Hex::Width(terrain);
+        auto terrain_w = DarkEmperor::Width(terrain);
 
-        auto terrain_h = Hex::Height(terrain);
+        auto terrain_h = DarkEmperor::Height(terrain);
 
         // works best only with boundary rendering, i.e. rendering texture within hex boundaries
         if (crop)
@@ -43,18 +43,18 @@ namespace Hex
                 terrain_w = size * 2;
 
                 // pad
-                terrain_h = size * Hex::Scale + 1;
+                terrain_h = size * DarkEmperor::Scale + 1;
             }
             else
             {
                 // pad
-                terrain_w = size * Hex::Scale + 1;
+                terrain_w = size * DarkEmperor::Scale + 1;
 
                 terrain_h = size * 2;
             }
         }
 
-        auto map = Hex::Map(width, height, size, flat);
+        auto map = DarkEmperor::Map(width, height, size, flat);
 
         map.View = Point(0, 0);
 
@@ -64,16 +64,16 @@ namespace Hex
         {
             map.Draw.X = int(graphics.Width - (map.Limit.X * 3 + 1) * map.Size / 2) / 2 + map.Size;
 
-            map.Draw.Y = int(graphics.Height - (map.Limit.Y * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
+            map.Draw.Y = int(graphics.Height - (map.Limit.Y * 2 + 1) * map.Size * DarkEmperor::Scale / 2) / 2;
         }
         else
         {
-            map.Draw.X = int(graphics.Width - (map.Limit.X * 2 + 1) * map.Size * Hex::Scale / 2) / 2;
+            map.Draw.X = int(graphics.Width - (map.Limit.X * 2 + 1) * map.Size * DarkEmperor::Scale / 2) / 2;
 
             map.Draw.Y = int(graphics.Height - (map.Limit.Y * 3 + 1) * map.Size / 2) / 2 + map.Size;
         }
 
-        auto hex = Hex::Vertices(Point(0, 0), map.Size, map.Flat);
+        auto hex = DarkEmperor::Vertices(Point(0, 0), map.Size, map.Flat);
 
         auto offset_hex = Points();
 
@@ -110,19 +110,19 @@ namespace Hex
                     // calculate hex center locations
                     if (map.Flat)
                     {
-                        auto hex_offset = Hex::Scale / 2.0 * (point.X % 2 + 1);
+                        auto hex_offset = DarkEmperor::Scale / 2.0 * (point.X % 2 + 1);
 
-                        cy = int((Hex::Scale * point.Y + hex_offset) * map.Size);
+                        cy = int((DarkEmperor::Scale * point.Y + hex_offset) * map.Size);
 
-                        cx = int(point.X * Hex::Offset * map.Size);
+                        cx = int(point.X * DarkEmperor::Offset * map.Size);
                     }
                     else
                     {
-                        auto hex_offset = Hex::Scale / 2.0 * (point.Y % 2 + 1);
+                        auto hex_offset = DarkEmperor::Scale / 2.0 * (point.Y % 2 + 1);
 
-                        cx = int((Hex::Scale * point.X + hex_offset) * map.Size);
+                        cx = int((DarkEmperor::Scale * point.X + hex_offset) * map.Size);
 
-                        cy = int(point.Y * Hex::Offset * map.Size);
+                        cy = int(point.Y * DarkEmperor::Offset * map.Size);
                     }
 
                     auto show = false;
@@ -215,9 +215,9 @@ namespace Hex
             SDL_FlushEvent(result.type);
         }
 
-        Hex::Free(&terrain);
+        DarkEmperor::Free(&terrain);
 
-        Hex::Free(&texture);
+        DarkEmperor::Free(&texture);
 
         Graphics::Quit(graphics);
     }
@@ -240,15 +240,15 @@ int main(int argc, char **argv)
 
     auto size = std::atoi(argv[3]);
 
-    auto flat = Hex::Engine::ToUpper(argv[4]) == "FLAT";
+    auto flat = DarkEmperor::Engine::ToUpper(argv[4]) == "FLAT";
 
-    auto blind = Hex::Engine::ToUpper(argv[5]) == "BLIND";
+    auto blind = DarkEmperor::Engine::ToUpper(argv[5]) == "BLIND";
 
-    auto new_textures = Hex::Engine::ToUpper(argv[6]) == "NEW";
+    auto new_textures = DarkEmperor::Engine::ToUpper(argv[6]) == "NEW";
 
-    auto crop = Hex::Engine::ToUpper(argv[6]) == "CROP";
+    auto crop = DarkEmperor::Engine::ToUpper(argv[6]) == "CROP";
 
-    Hex::Main(width, height, size, flat, blind, new_textures, crop);
+    DarkEmperor::Main(width, height, size, flat, blind, new_textures, crop);
 
     return 0;
 }

@@ -8,7 +8,7 @@
 
 #include "Color.hpp"
 
-namespace Hex
+namespace DarkEmperor
 {
     // load an image as an SDL surface
     SDL_Surface *Load(const char *image)
@@ -50,7 +50,7 @@ namespace Hex
     {
         SDL_Texture *texture = nullptr;
 
-        auto surface = Hex::Load(path);
+        auto surface = DarkEmperor::Load(path);
 
         if (surface)
         {
@@ -63,7 +63,7 @@ namespace Hex
                 SDL_SetTextureColorMod(texture, Color::R(Color::Active), Color::G(Color::Active), Color::B(Color::Active));
             }
 
-            Hex::Free(&surface);
+            DarkEmperor::Free(&surface);
         }
 
         return texture;
@@ -81,7 +81,7 @@ namespace Hex
     {
         auto width = 0;
 
-        Hex::Size(texture, &width, nullptr);
+        DarkEmperor::Size(texture, &width, nullptr);
 
         return width;
     }
@@ -90,7 +90,7 @@ namespace Hex
     {
         auto height = 0;
 
-        Hex::Size(texture, nullptr, &height);
+        DarkEmperor::Size(texture, nullptr, &height);
 
         return height;
     }
