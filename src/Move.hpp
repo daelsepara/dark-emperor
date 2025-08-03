@@ -6,11 +6,11 @@
 
 namespace DarkEmperor::Move
 {
-    // Path found by A* algorithm
+    // path found by A* algorithm
     class Path
     {
     public:
-        // List of coordinates of the path
+        // list of coordinates of the path
         Points Points;
 
         Point Closest;
@@ -18,7 +18,7 @@ namespace DarkEmperor::Move
         Path() {}
     };
 
-    // Class representing a node in the graph
+    // class representing a node in the graph
     class Node
     {
     public:
@@ -26,7 +26,7 @@ namespace DarkEmperor::Move
 
         int Y = -1;
 
-        int Cost = 0.0;
+        int Cost = 0;
 
         int Distance = 0;
 
@@ -42,16 +42,16 @@ namespace DarkEmperor::Move
 
         Node() {}
 
-        // Total cost to traverse this node
+        // total cost to traverse this node
         int CostDistance()
         {
             return (this->Cost + this->Distance);
         }
 
-        // The distance is essentially the estimated distance, ignoring obstacles to our target.
-        // So how many nodes left and right, up and down, ignoring obstacles, to get there.
+        // the distance is estimated distance, ignoring obstacles to our target:
+        // how many nodes ignoring obstacles, to get there.
         //
-        // Computes the 2D Manhattan Distance
+        // computes the 2D Manhattan Distance (modified for hex)
         void SetDistance(Map &map, Smart<Move::Node> &node)
         {
             this->Distance = map.Distance(this->X, this->Y, node->X, node->Y);
@@ -59,7 +59,7 @@ namespace DarkEmperor::Move
     };
 
     // list of nodes
-    typedef std::vector<Smart<Move::Node>> Moves;
+    typedef List<Smart<Move::Node>> Moves;
 
     Point operator+(const Smart<Node> &node, const Point &p)
     {

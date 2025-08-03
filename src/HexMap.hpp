@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "Types.hpp"
-#include "Templates.hpp"
+#include "Unit.hpp"
 
 namespace DarkEmperor
 {
@@ -109,7 +109,7 @@ namespace DarkEmperor
         }
     };
 
-    typedef std::vector<Point> Points;
+    typedef List<Point> Points;
 
     const Points FlatNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 0}, {-1, -1}};
 
@@ -177,13 +177,21 @@ namespace DarkEmperor
         TerrainType Terrain = TerrainType::NONE;
 
         // units occupying current tile (id, type, nationality)
-        Units Units = {};
+        UnitIds Units = {};
 
         // stacking limit
         int Limit = 0;
 
         // city value
         int CityValue = 0;
+
+        // current owner
+        Nationality Owner = Nationality::NONE;
+
+        // asset number
+        int Asset = -1;
+
+        Uint32 Color = 0;
 
         void Initialize(int x, int y, bool flat)
         {
@@ -219,9 +227,29 @@ namespace DarkEmperor
 
         bool IsValid() { return this->Hex.IsValid(); }
 
-        int Stack()
+        int CurrentStack()
         {
             return (int)(Units.size());
+        }
+
+        // tile is capital city
+        bool IsCapital()
+        {
+            return this->Terrain == TerrainType::CAPITAL_CITY;
+        }
+
+        // tile is a city
+        bool IsCity()
+        {
+            return this->Terrain == TerrainType::CITY || this->Terrain == TerrainType::CAPITAL_CITY;
+        }
+
+        // can fit stack of size
+        bool CanFitStack(int size)
+        {
+            auto limit = this->Limit + (this->IsCity() ? this->CityValue : 0);
+
+            return size <= (limit - this->CurrentStack());
         }
 
         // check if location is traversable or if it is the target destination
@@ -250,6 +278,7 @@ namespace DarkEmperor
             return passable;
         }
 
+        // check if tile is blocked
         bool IsBlocked()
         {
             return (this->Terrain == TerrainType::NONE);

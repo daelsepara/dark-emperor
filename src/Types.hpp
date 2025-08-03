@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Templates.hpp"
+
 namespace DarkEmperor
 {
     // terrain
@@ -21,7 +23,7 @@ namespace DarkEmperor
         BATTLEFIELD
     };
 
-    std::vector<TerrainType> GroundPassable = {
+    List<TerrainType> GroundPassable = {
         TerrainType::CITY,
         TerrainType::CAPITAL_CITY,
         TerrainType::MOUNTAIN,
@@ -32,7 +34,7 @@ namespace DarkEmperor
         TerrainType::MAGIC_HEX,
         TerrainType::BATTLEFIELD};
 
-    std::vector<TerrainType> NavalPassable = {
+    List<TerrainType> NavalPassable = {
         TerrainType::RIVER,
         TerrainType::PORT,
         TerrainType::SEA,
@@ -40,7 +42,7 @@ namespace DarkEmperor
         TerrainType::MAGIC_HEX,
         TerrainType::BATTLEFIELD};
 
-    std::vector<TerrainType> AirPassable = {
+    List<TerrainType> AirPassable = {
         TerrainType::CITY,
         TerrainType::CAPITAL_CITY,
         TerrainType::MOUNTAIN,
@@ -110,7 +112,7 @@ namespace DarkEmperor
     } UnitId;
 
     // unit id collection
-    typedef std::vector<UnitId> Units;
+    typedef List<UnitId> UnitIds;
 
     // for unit-stacking in the map
     typedef struct UnitStack
@@ -122,7 +124,7 @@ namespace DarkEmperor
         UnitType Type = UnitType::NONE;
 
         // actual unit composition
-        Units Units = {};
+        UnitIds Units = {};
 
     } UnitStack;
 

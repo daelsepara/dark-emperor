@@ -2,6 +2,7 @@
 #define __ASSET_HPP__
 
 #include "Primitives.hpp"
+#include "Templates.hpp"
 
 namespace DarkEmperor::Asset
 {
@@ -28,6 +29,8 @@ namespace DarkEmperor::Asset
 
         return texture;
     }
+
+    UnorderedMap<int, std::string> Assets = {};
 }
 
 #endif
