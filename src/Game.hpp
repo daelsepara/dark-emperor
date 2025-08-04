@@ -8,6 +8,13 @@
 
 namespace DarkEmperor::Game
 {
+    enum class Feature
+    {
+        NONE = -1,
+        NO_ATTRITION,
+        UNLIMITED_STACK_SIZE
+    };
+
     // list of kingdoms that have been activated
     UnorderedMap<Kingdom, Player> Activations = {};
 
