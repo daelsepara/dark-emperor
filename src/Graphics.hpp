@@ -9,6 +9,7 @@
 
 #include "Asset.hpp"
 #include "Map.hpp"
+#include "Scene.hpp"
 
 #ifdef SDL_HINT_RENDER_LINE_METHOD
 #undef SDL_HINT_RENDER_LINE_METHOD
