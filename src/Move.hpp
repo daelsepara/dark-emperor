@@ -110,7 +110,7 @@ namespace DarkEmperor::Move
             {
                 if (Move::IsPassable(map, next, units))
                 {
-                    traversable.push_back(std::make_shared<Move::Node>(next, current->Cost + map[next].Attrition, current));
+                    traversable.push_back(std::make_shared<Move::Node>(next, current->Cost + (map[next].Attrition == 0 ? 1 : map[next].Attrition), current));
 
                     traversable.back()->SetDistance(map, target);
                 }
