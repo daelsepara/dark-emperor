@@ -4,7 +4,7 @@
 #include <SDL.h>
 
 #include "Asset.hpp"
-#include "Types.hpp"
+#include "Controls.hpp"
 
 // classes and functions to define objects that will be rendered on screen
 namespace DarkEmperor
@@ -45,10 +45,14 @@ namespace DarkEmperor
 
     typedef List<Element> Elements;
 
+    typedef List<Controls::Base> ControlsList;
+
     class Scene
     {
     public:
         Elements Elements = {};
+
+        ControlsList Controls = {};
 
         Scene() {}
     };

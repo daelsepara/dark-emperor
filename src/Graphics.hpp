@@ -501,6 +501,18 @@ namespace DarkEmperor::Graphics
 
         SDL_Quit();
     }
+
+    void Render(Graphics::Base &graphics, Element element)
+    {
+    }
+
+    void Render(Graphics::Base &graphics, Scene scene)
+    {
+    }
+
+    void Render(Graphics::Base &graphics, Scenes scenes)
+    {
+    }
 }
 
 #endif
