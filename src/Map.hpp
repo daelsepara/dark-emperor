@@ -82,7 +82,7 @@ namespace DarkEmperor
         TerrainType Terrain = TerrainType::NONE;
 
         // units occupying current tile (id, type, kingdom)
-        UnitIds Units = {};
+        Stack Units = {};
 
         // stacking limit
         int StackLimit = 0;
@@ -163,24 +163,26 @@ namespace DarkEmperor
         // check if location is traversable or if it is the target destination
         bool IsPassable(UnitType type)
         {
-            auto passable = false;
+            return DarkEmperor::In(AllowedPassage[this->Terrain], type);
+        }
 
-            switch (type)
+        bool IsPassable(Stack &units)
+        {
+            auto passable = true;
+
+            auto types = List<UnitType>();
+
+            for (auto unit : units)
             {
-            case UnitType::GROUND:
-                passable = DarkEmperor::In(DarkEmperor::GroundPassable, this->Terrain);
-                break;
-            case UnitType::NAVAL:
-                passable = DarkEmperor::In(DarkEmperor::NavalPassable, this->Terrain);
-                break;
-            case UnitType::AIR:
-                passable = DarkEmperor::In(DarkEmperor::AirPassable, this->Terrain);
-                break;
-            case UnitType::LEADER:
-                passable = DarkEmperor::In(DarkEmperor::AirPassable, this->Terrain);
-                break;
-            default:
-                break;
+                if (!DarkEmperor::In(types, unit.Type))
+                {
+                    types.push_back(unit.Type);
+                }
+            }
+
+            for (auto type : types)
+            {
+                passable &= this->IsPassable(type);
             }
 
             return passable;
@@ -420,6 +422,55 @@ namespace DarkEmperor
             return this->Distance(src.X, src.Y, dst.X, dst.Y);
         }
     };
+
+    Kingdom FirstKingdom(Stack &units)
+    {
+        auto kingdom = Kingdom::NONE;
+
+        for (auto unit : units)
+        {
+            if (unit.Kingdom != Kingdom::NONE)
+            {
+                kingdom = unit.Kingdom;
+
+                break;
+            }
+        }
+
+        return kingdom;
+    }
+
+    bool Has(Stack &units, UnitType type)
+    {
+        bool has = false;
+
+        for (auto unit : units)
+        {
+            if (unit.Type == type)
+            {
+                has = true;
+
+                break;
+            }
+        }
+
+        return has;
+    }
+
+    int Attrition(Map &map, Units &units, Points path)
+    {
+        auto attrition = 0;
+
+        for (auto point : path)
+        {
+            if (map.IsValid(point))
+            {
+                attrition += map[point].Attrition;
+            }
+        }
+
+        return attrition;
+    }
 }
 
 #endif

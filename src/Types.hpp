@@ -24,40 +24,6 @@ namespace DarkEmperor
         BATTLEFIELD
     };
 
-    List<TerrainType> GroundPassable = {
-        TerrainType::CITY,
-        TerrainType::CAPITAL_CITY,
-        TerrainType::MOUNTAIN,
-        TerrainType::COASTAL,
-        TerrainType::RIVER,
-        TerrainType::PORT,
-        TerrainType::HOLY_PLACE,
-        TerrainType::SETTLED,
-        TerrainType::MAGIC_HEX,
-        TerrainType::BATTLEFIELD};
-
-    List<TerrainType> NavalPassable = {
-        TerrainType::RIVER,
-        TerrainType::PORT,
-        TerrainType::COASTAL,
-        TerrainType::SEA,
-        TerrainType::HOLY_PLACE,
-        TerrainType::MAGIC_HEX,
-        TerrainType::BATTLEFIELD};
-
-    List<TerrainType> AirPassable = {
-        TerrainType::CITY,
-        TerrainType::CAPITAL_CITY,
-        TerrainType::MOUNTAIN,
-        TerrainType::RIVER,
-        TerrainType::COASTAL,
-        TerrainType::SEA,
-        TerrainType::PORT,
-        TerrainType::HOLY_PLACE,
-        TerrainType::SETTLED,
-        TerrainType::MAGIC_HEX,
-        TerrainType::BATTLEFIELD};
-
     enum class UnitType
     {
         NONE = -1,
@@ -116,7 +82,7 @@ namespace DarkEmperor
     } UnitId;
 
     // unit id collection
-    typedef List<UnitId> UnitIds;
+    typedef List<UnitId> Stack;
 
     // for unit-stacking in the map
     typedef struct UnitStack
@@ -128,7 +94,7 @@ namespace DarkEmperor
         UnitType Type = UnitType::NONE;
 
         // actual unit composition
-        UnitIds Units = {};
+        Stack Units = {};
 
     } UnitStack;
 
@@ -302,6 +268,18 @@ namespace DarkEmperor
 
     typedef List<Point> Points;
 
+    UnorderedMap<TerrainType, List<UnitType>> AllowedPassage = {
+        {TerrainType::CITY, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::CAPITAL_CITY, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::MOUNTAIN, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::RIVER, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::COASTAL, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER, UnitType::NAVAL}},
+        {TerrainType::SEA, {UnitType::AIR, UnitType::LEADER, UnitType::NAVAL}},
+        {TerrainType::PORT, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER, UnitType::NAVAL}},
+        {TerrainType::HOLY_PLACE, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::SETTLED, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::MAGIC_HEX, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
+        {TerrainType::BATTLEFIELD, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}}};
 }
 
 #endif
