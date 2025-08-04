@@ -9,30 +9,30 @@ namespace DarkEmperor
     {
         auto graphics = Graphics::Initialize("Hex Test");
 
-        auto texture = DarkEmperor::Create(graphics.Renderer, "images/ninja-head.png");
+        auto texture = Asset::Create(graphics.Renderer, "images/ninja-head.png");
 
-        auto texture_w = DarkEmperor::Width(texture);
+        auto texture_w = Asset::Width(texture);
 
-        auto texture_h = DarkEmperor::Height(texture);
+        auto texture_h = Asset::Height(texture);
 
         SDL_Texture *terrain = nullptr;
 
         if (new_textures)
         {
-            terrain = DarkEmperor::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
+            terrain = Asset::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
         }
         else if (crop)
         {
-            terrain = DarkEmperor::Create(graphics.Renderer, "images/desert.png");
+            terrain = Asset::Create(graphics.Renderer, "images/desert.png");
         }
         else
         {
-            terrain = DarkEmperor::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+            terrain = Asset::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
         }
 
-        auto terrain_w = DarkEmperor::Width(terrain);
+        auto terrain_w = Asset::Width(terrain);
 
-        auto terrain_h = DarkEmperor::Height(terrain);
+        auto terrain_h = Asset::Height(terrain);
 
         // works best only with boundary rendering, i.e. rendering texture within hex boundaries
         if (crop)
@@ -215,9 +215,9 @@ namespace DarkEmperor
             SDL_FlushEvent(result.type);
         }
 
-        DarkEmperor::Free(&terrain);
+        Asset::Free(&terrain);
 
-        DarkEmperor::Free(&texture);
+        Asset::Free(&texture);
 
         Graphics::Quit(graphics);
     }

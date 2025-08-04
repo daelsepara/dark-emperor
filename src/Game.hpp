@@ -8,14 +8,6 @@
 
 namespace DarkEmperor::Game
 {
-    enum class Feature
-    {
-        NONE = -1,
-        NO_ATTRITION,
-        UNLIMITED_STACK_SIZE,
-        NO_STACKING
-    };
-
     // check if other units are exerting control over this tile
     bool IsControlled(Map &map, Point point, Kingdom kingdom)
     {

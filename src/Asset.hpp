@@ -1,17 +1,83 @@
 #ifndef __ASSET_HPP__
 #define __ASSET_HPP__
 
-#include "Primitives.hpp"
+#include <iostream>
+
+#include <SDL.h>
+#include <SDL_image.h>
+
+#include "Color.hpp"
 #include "Templates.hpp"
 
 namespace DarkEmperor::Asset
 {
+    // load an image as an SDL surface
+    SDL_Surface *Load(const char *image)
+    {
+        auto surface = IMG_Load(image);
+
+        if (!surface)
+        {
+            std::cerr << "Unable to load image " << image << "! SDL Error: " << SDL_GetError() << std::endl;
+        }
+
+        return surface;
+    }
+
+    // free surface
+    void Free(SDL_Surface **surface)
+    {
+        if (*surface != nullptr)
+        {
+            SDL_FreeSurface(*surface);
+
+            *surface = nullptr;
+        }
+    }
+
+    // free texture
+    void Free(SDL_Texture **texture)
+    {
+        if (*texture != nullptr)
+        {
+            SDL_DestroyTexture(*texture);
+
+            *texture = nullptr;
+        }
+    }
+
+    void Size(SDL_Texture *texture, int *texture_w, int *texture_h)
+    {
+        if (texture)
+        {
+            SDL_QueryTexture(texture, nullptr, nullptr, texture_w, texture_h);
+        }
+    }
+
+    int Width(SDL_Texture *texture)
+    {
+        auto width = 0;
+
+        Asset::Size(texture, &width, nullptr);
+
+        return width;
+    }
+
+    int Height(SDL_Texture *texture)
+    {
+        auto height = 0;
+
+        Asset::Size(texture, nullptr, &height);
+
+        return height;
+    }
+
     // create texture from a file
     SDL_Texture *Create(SDL_Renderer *renderer, const char *path)
     {
         SDL_Texture *texture = nullptr;
 
-        auto surface = DarkEmperor::Load(path);
+        auto surface = Asset::Load(path);
 
         if (surface)
         {
@@ -24,7 +90,7 @@ namespace DarkEmperor::Asset
                 SDL_SetTextureColorMod(texture, Color::R(Color::Active), Color::G(Color::Active), Color::B(Color::Active));
             }
 
-            DarkEmperor::Free(&surface);
+            Asset::Free(&surface);
         }
 
         return texture;

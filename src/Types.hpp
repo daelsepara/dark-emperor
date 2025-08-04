@@ -194,6 +194,114 @@ namespace DarkEmperor
         NECROMANCER,
         KINGDOM
     };
+
+    // game features
+    enum class Feature
+    {
+        NONE = -1,
+        NO_ATTRITION,
+        UNLIMITED_STACK_SIZE,
+        NO_STACKING
+    };
+
+    // cartesian coordinates
+    class Point
+    {
+    public:
+        int X = -1;
+
+        int Y = -1;
+
+        Point(int x, int y) : X(x), Y(y) {}
+
+        Point() {}
+
+        Point &operator*=(const Point &p)
+        {
+            this->X *= p.X;
+
+            this->Y *= p.Y;
+
+            return *this;
+        }
+
+        Point &operator+=(const Point &p)
+        {
+            this->X += p.X;
+
+            this->Y += p.Y;
+
+            return *this;
+        }
+
+        Point &operator-=(const Point &p)
+        {
+            this->X -= p.X;
+
+            this->Y -= p.Y;
+
+            return *this;
+        }
+
+        bool operator==(const Point &p)
+        {
+            return this->X == p.X && this->Y == p.Y;
+        }
+
+        bool operator!=(const Point &p)
+        {
+            return !(*this == p);
+        }
+
+        Point operator+(const Point &p)
+        {
+            return Point(this->X + p.X, this->Y + p.Y);
+        }
+
+        Point operator-(const Point &p)
+        {
+            return Point(this->X - p.X, this->Y - p.Y);
+        }
+
+        Point operator*(const Point &p)
+        {
+            return Point(this->X * p.X, this->Y * p.Y);
+        }
+
+        Point operator+(int p)
+        {
+            return Point(this->X + p, this->Y + p);
+        }
+
+        Point operator-(int p)
+        {
+            return *this + (-p);
+        }
+
+        Point operator*(int p)
+        {
+            return Point(this->X * p, this->Y * p);
+        }
+
+        Point operator/(const Point &p)
+        {
+            return Point(this->X / p.X, this->Y / p.Y);
+        }
+
+        Point operator/(int p)
+        {
+            return Point(this->X / p, this->Y / p);
+        }
+
+        // check if point is a valid map coordinate
+        bool IsNone()
+        {
+            return *this == Point(-1, -1);
+        }
+    };
+
+    typedef List<Point> Points;
+
 }
 
 #endif

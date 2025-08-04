@@ -7,8 +7,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "Asset.hpp"
 #include "Map.hpp"
-#include "Primitives.hpp"
 
 #ifdef SDL_HINT_RENDER_LINE_METHOD
 #undef SDL_HINT_RENDER_LINE_METHOD
@@ -444,7 +444,7 @@ namespace DarkEmperor::Graphics
 
         auto texture_h = 0;
 
-        DarkEmperor::Size(texture, &texture_w, &texture_h);
+        Asset::Size(texture, &texture_w, &texture_h);
 
         Graphics::RenderTexture(graphics, texture, texture_w, texture_h, x, y);
     }
