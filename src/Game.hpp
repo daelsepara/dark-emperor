@@ -15,9 +15,6 @@ namespace DarkEmperor::Game
         UNLIMITED_STACK_SIZE
     };
 
-    // list of kingdoms that have been activated
-    UnorderedMap<Kingdom, Player> Activations = {};
-
     // check if other units are exerting control over this tile
     bool IsControlled(Map &map, Point point, Kingdom kingdom)
     {
@@ -87,6 +84,24 @@ namespace DarkEmperor::Game
 
         return attrition;
     }
+
+    class Session
+    {
+    public:
+        // list of game features
+        List<Feature> Features = {};
+
+        // units
+        Units Units = {};
+
+        // the world of Loslon
+        Map Map = DarkEmperor::Map();
+
+        // list of kingdoms that have been activated
+        UnorderedMap<Kingdom, Player> Activations = {};
+
+        Session() {}
+    };
 }
 
 #endif
