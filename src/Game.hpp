@@ -72,6 +72,14 @@ namespace DarkEmperor::Game
 
         return std::max(0, production - lost);
     }
+
+    // computes total attrition cost
+    int Attrition(Map &map, Units &units, Points path)
+    {
+        auto attrition = 0;
+
+        return attrition;
+    }
 }
 
 #endif
