@@ -13,6 +13,12 @@ namespace DarkEmperor
     class Element
     {
     public:
+        // location on screen
+        Point Location = Point(0, 0);
+
+        // dimensions
+        Point Dimensions = Point(0, 0);
+
         // texture associated with the element
         SDL_Texture *Texture;
 
@@ -22,23 +28,11 @@ namespace DarkEmperor
         // border color, 0 if none
         Uint32 Border = 0;
 
-        // x location on screen
-        int X = 0;
-
-        // y location on screen
-        int Y = 0;
-
         // size of texture portion to be rendered. Used with Offset.
         int Bounds = 0;
 
         // starting point in texture to be rendered. Used with Bounds.
         int Offset = 0;
-
-        // width of the element
-        int W = 0;
-
-        // height of the element
-        int H = 0;
 
         // thickness of the border in pixels
         int BorderSize = 0;
@@ -58,6 +52,8 @@ namespace DarkEmperor
 
         Scene() {}
     };
+
+    typedef List<Scene> Scenes;
 }
 
 #endif
