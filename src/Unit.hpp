@@ -35,8 +35,6 @@ namespace DarkEmperor::Unit
 
         Base() {}
     };
-
-    typedef List<Unit::Base> Units;
 }
 
 #endif

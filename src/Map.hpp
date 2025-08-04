@@ -112,6 +112,8 @@ namespace DarkEmperor
 
     typedef List<Point> Points;
 
+    typedef List<Unit::Base> Units;
+
     const Points FlatNeighbors = {{0, -1}, {1, -1}, {1, 0}, {0, 1}, {-1, 0}, {-1, -1}};
 
     const Points FlatNeighborsOdd = {{0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}};
