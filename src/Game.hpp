@@ -12,7 +12,8 @@ namespace DarkEmperor::Game
     {
         NONE = -1,
         NO_ATTRITION,
-        UNLIMITED_STACK_SIZE
+        UNLIMITED_STACK_SIZE,
+        NO_MIXED_UNITS
     };
 
     // check if other units are exerting control over this tile
