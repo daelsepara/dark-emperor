@@ -31,6 +31,13 @@ namespace DarkEmperor::Color
 
     Uint32 Blur = 0x7F000000;
 
+    // color definitions
+    Uint32 White = 0xFFFFFFFF;
+
+    Uint32 Grey = 0xFF606060;
+
+    Uint32 Black = 0xFF000000;
+
     SDL_Color S(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     {
         return {r, g, b, a};

@@ -186,6 +186,14 @@ namespace DarkEmperor
         {TerrainType::SETTLED, 4},
         {TerrainType::MAGIC_HEX, 4},
         {TerrainType::BATTLEFIELD, 4}};
+
+    // player (control) type
+    enum class Player
+    {
+        NONE = -1,
+        NECROMANCER,
+        KINGDOM
+    };
 }
 
 #endif

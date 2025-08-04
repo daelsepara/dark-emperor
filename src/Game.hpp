@@ -8,6 +8,9 @@
 
 namespace DarkEmperor::Game
 {
+    // list of kingdoms that have been activated
+    UnorderedMap<Kingdom, Player> Activations = {};
+
     // check if other units are exerting control over this tile
     bool IsControlled(Map &map, Point point, Kingdom kingdom)
     {
@@ -15,20 +18,59 @@ namespace DarkEmperor::Game
 
         if (map.IsValid(point))
         {
-            for (auto neighbor : map.Neighbors(point))
+            if (map[point].Others(kingdom) > 0)
             {
-                auto &tile = map[point];
+                controlled = false;
+            }
+            else
+            {
+                for (auto neighbor : map.Neighbors(point))
+                {
+                    auto &tile = map[point];
+
+                    if (tile.Others(kingdom) > 0)
+                    {
+                        controlled = false;
+
+                        break;
+                    }
+                }
             }
         }
 
         return controlled;
     }
 
-    int Production(Map &map, Kingdom kingdom)
+    int Revenue(Map &map, Kingdom kingdom)
     {
-        int production = 0;
+        auto production = 0;
 
-        return production;
+        auto lost = 0;
+
+        for (auto y = 0; y < map.Dimensions.Y; y++)
+        {
+            for (auto x = 0; x < map.Dimensions.X; x++)
+            {
+                auto point = Point(x, y);
+
+                auto &tile = map[point];
+
+                if (tile.Owner == kingdom)
+                {
+                    if (!Game::IsControlled(map, point, kingdom))
+                    {
+                        // TODO: Tax according to terrain type
+                        lost++;
+                    }
+                    else if (tile.IsCity() && tile.Count(kingdom) > 0)
+                    {
+                        production += tile.CityValue;
+                    }
+                }
+            }
+        }
+
+        return std::max(0, production - lost);
     }
 }
 

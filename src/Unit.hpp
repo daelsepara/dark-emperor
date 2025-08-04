@@ -1,6 +1,7 @@
 #ifndef __UNIT_HPP__
 #define __UNIT_HPP__
 
+#include "Color.hpp"
 #include "Types.hpp"
 
 namespace DarkEmperor::Unit
@@ -21,6 +22,10 @@ namespace DarkEmperor::Unit
         int Hero = -1;
 
         int Magic = -1;
+
+        Uint32 Square = 0;
+
+        Uint32 Circle = 0;
 
         bool IsUndead = false;
 
