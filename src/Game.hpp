@@ -95,12 +95,18 @@ namespace DarkEmperor::Game
         Units Units = {};
 
         // the world of Loslon
-        Map Map = DarkEmperor::Map();
+        Map Loslon = Map();
 
         // list of kingdoms that have been activated
         UnorderedMap<Kingdom, Player> Activations = {};
 
-        Session() {}
+        Session()
+        {
+            // setup map dimensions
+            this->Loslon = Map(40, 27, 54, true);
+
+            // TODO: load tile settings
+        }
     };
 }
 
