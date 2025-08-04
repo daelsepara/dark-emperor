@@ -158,10 +158,10 @@ namespace DarkEmperor::Move
 
             start->SetDistance(map, end);
 
-            // List of nodes to be checked
+            // list of nodes to be checked
             auto active = Moves();
 
-            // List of nodes already visited
+            // list of nodes already visited
             auto visited = Moves();
 
             active.push_back(start);
@@ -172,7 +172,7 @@ namespace DarkEmperor::Move
 
             while (!active.empty())
             {
-                // Sort based on CostDistance
+                // sort based on CostDistance
                 std::sort(active.begin(), active.end(), [](Smart<Move::Node> &src, Smart<Move::Node> &dst)
                           { return src->CostDistance() < dst->CostDistance(); });
 
@@ -180,7 +180,7 @@ namespace DarkEmperor::Move
 
                 if (Move::Compare(check, end))
                 {
-                    // We found the destination and we can be sure (because of the sort order above)
+                    // we found the destination and we can be sure (because of the sort order above)
                     // that it's the most low cost option.
                     auto node = check;
 
@@ -191,7 +191,7 @@ namespace DarkEmperor::Move
                         node = node->Parent;
                     }
 
-                    // Reverse list of coordinates so path leads from src to dst
+                    // reverse list of coordinates so path leads from src to dst
                     std::reverse(path.Points.begin(), path.Points.end());
 
                     return path;
@@ -217,13 +217,13 @@ namespace DarkEmperor::Move
 
                 for (auto &node : nodes)
                 {
-                    // We have already visited this node so we don't need to do so again!
+                    // we have already visited this node so we don't need to do so again!
                     if (Move::In(visited, node))
                     {
                         continue;
                     }
 
-                    // It's already in the active list, but that's OK, maybe this new node has a better value (e.g. We might zigzag earlier but this is now straighter).
+                    // it's already in the active list, but that's OK, maybe this new node has a better value (e.g. We might zigzag earlier but this is now straighter).
                     if (Move::In(active, node))
                     {
                         auto existing = *Move::Find(active, node);
@@ -237,7 +237,7 @@ namespace DarkEmperor::Move
                     }
                     else
                     {
-                        // We've never seen this node before so add it to the list.
+                        // we've never seen this node before so add it to the list.
                         active.push_back(node);
                     }
                 }
