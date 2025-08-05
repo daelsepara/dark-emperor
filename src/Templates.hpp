@@ -1,6 +1,8 @@
 #ifndef __TEMPLATES_HPP__
 #define __TEMPLATES_HPP__
 
+#include <algorithm>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
