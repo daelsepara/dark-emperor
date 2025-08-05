@@ -1,6 +1,7 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
+#include <functional>
 #include <SDL.h>
 
 #include "Asset.hpp"
@@ -54,10 +55,18 @@ namespace DarkEmperor
 
         ControlsList Controls = {};
 
+        // background color of the entire screen. set before rendering each element
+        Uint32 Background = 0;
+
+        // clipping area
+        Point Clip = Point(-1, -1);
+
+        Point ClipDimensions = Point(0, 0);
+
         Scene() {}
     };
 
-    typedef List<Scene> Scenes;
+    typedef List<Reference<Scene>> Scenes;
 }
 
 #endif

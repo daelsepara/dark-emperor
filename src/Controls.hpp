@@ -12,7 +12,7 @@ namespace DarkEmperor::Controls
 
     int Default = -1;
 
-    struct Set
+    typedef struct Set
     {
         // ID
         int Me = -1;
@@ -30,6 +30,21 @@ namespace DarkEmperor::Controls
         int Down = -1;
     } IdSet;
 
+    typedef struct MapControl
+    {
+        // location on the map (hex)
+        Point Coordinates = Point(-1, -1);
+
+        Point Offset = Point(0, 0);
+
+        // vertices of the hex highlight (used with OnMap and Map)
+        Points Hex = {};
+
+        // hex orientation is flat
+        bool Flat = false;
+
+    } MapControl;
+
     class Base
     {
     public:
@@ -44,17 +59,17 @@ namespace DarkEmperor::Controls
         // dimensions of this control's hitbox
         Point Dimensions = Point(0, 0);
 
+        // for non-hex outline
+        int Pixels = 2;
+
         // color of border when hightlighted
         Uint32 Highlight;
 
         // control is on the map
         bool OnMap = false;
 
-        // location on the map (hex)
-        Point Map = Point(-1, -1);
-
-        // vertices of the hex highlight (used with OnMap and Map)
-        Points Hex = {};
+        // map control
+        MapControl Map = {};
     };
 
     // user input base class

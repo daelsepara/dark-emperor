@@ -17,6 +17,9 @@ namespace DarkEmperor
     template <typename T>
     using List = std::vector<T>;
 
+    template <typename T>
+    using Reference = std::reference_wrapper<T>;
+
     // array (vector of vectors)
     template <typename T>
     using Array = List<List<T>>;

@@ -118,6 +118,34 @@ namespace DarkEmperor::Graphics
         }
     }
 
+    // clip rendering outside of specified area
+    void Clip(Graphics::Base &graphics, Point clip, Point area)
+    {
+        if (graphics.Renderer)
+        {
+            SDL_Rect view;
+
+            view.w = area.X;
+
+            view.h = area.Y;
+
+            view.x = clip.X;
+
+            view.y = clip.Y;
+
+            SDL_RenderSetClipRect(graphics.Renderer, &view);
+        }
+    }
+
+    // reset clipping area
+    void Clip(Graphics::Base &graphics)
+    {
+        if (graphics.Renderer)
+        {
+            SDL_RenderSetClipRect(graphics.Renderer, nullptr);
+        }
+    }
+
     // assign dimensions to SDL_Rect dimensions
     void Dimensions(SDL_Rect &rect, int w, int h)
     {
@@ -224,6 +252,17 @@ namespace DarkEmperor::Graphics
         return rect;
     }
 
+    // draw a filled rectangle on screen
+    void FillRect(Graphics::Base &graphics, int w, int h, int x, int y, int color)
+    {
+        if (graphics.Renderer)
+        {
+            auto rect = Graphics::CreateRect(graphics, w, h, x, y, color);
+
+            SDL_RenderFillRect(graphics.Renderer, &rect);
+        }
+    }
+
     // draw rectangle outline
     void DrawRect(Graphics::Base &graphics, int w, int h, int x, int y, int color)
     {
@@ -239,6 +278,18 @@ namespace DarkEmperor::Graphics
     void DrawRect(Graphics::Base &graphics, int w, int h, Point point, int color)
     {
         Graphics::DrawRect(graphics, w, h, point.X, point.Y, color);
+    }
+
+    // draw a rectangle with thick borders on screen
+    void ThickRect(Graphics::Base &graphics, int w, int h, int x, int y, int color, int pts)
+    {
+        for (auto size = 0; size < pts; size++)
+        {
+            auto p = (pts - size);
+
+            // grow outward
+            Graphics::DrawRect(graphics, w + p * 2, h + p * 2, x - p, y - p, color);
+        }
     }
 
     // draw line
@@ -502,16 +553,100 @@ namespace DarkEmperor::Graphics
         SDL_Quit();
     }
 
+    // render scene element
     void Render(Graphics::Base &graphics, Element element)
     {
+        if (element.Hex.size() > 0)
+        {
+        }
+        else if (element.Texture != nullptr)
+        {
+            Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Background);
+        }
+        else if (element.Background != 0)
+        {
+            // fill background
+            Graphics::SetRenderDrawColor(graphics, element.Background);
+
+            Graphics::FillRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Background);
+        }
+
+        // draw rectangular outline around element
+        if (element.Hex.size() == 0 && element.Border != 0)
+        {
+            Graphics::ThickRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Border, element.BorderSize);
+        }
     }
 
-    void Render(Graphics::Base &graphics, Scene scene)
+    // render overlay on screen
+    void Overlay(Base &graphics, Scene &scene)
     {
+        if (graphics.Renderer)
+        {
+            if (!scene.Clip.IsNone())
+            {
+                // render only in visible areas
+                Graphics::Clip(graphics, scene.Clip, scene.ClipDimensions);
+            }
+            else
+            {
+                // reset clipping
+                Graphics::Clip(graphics);
+            }
+
+            for (auto &element : scene.Elements)
+            {
+                Graphics::Render(graphics, element);
+            }
+        }
     }
 
+    // render scene (set backgroud color)
+    void Render(Base &graphics, Scene &scene)
+    {
+        if (graphics.Renderer)
+        {
+            Graphics::FillWindow(graphics, scene.Background);
+
+            Graphics::Overlay(graphics, scene);
+        }
+    }
+
+    // render scenes
     void Render(Graphics::Base &graphics, Scenes scenes)
     {
+        if (graphics.Renderer && scenes.size() > 0)
+        {
+            Graphics::FillWindow(graphics, scenes.front().get().Background);
+
+            for (auto &scene : scenes)
+            {
+                Graphics::Overlay(graphics, scene.get());
+            }
+        }
+    }
+
+    void Render(Graphics::Base &graphics, ControlsList &controls, Controls::User input)
+    {
+        for (auto &control : controls)
+        {
+            if (control.Id.Me == input.Current)
+            {
+                if (!input.Blink)
+                {
+                    if (control.OnMap)
+                    {
+                        // render hex outline
+                        Graphics::RenderHex(graphics, control.Map.Hex, control.Map.Offset, control.Highlight, control.Map.Flat);
+                    }
+                    else
+                    {
+                        // render outline on control
+                        Graphics::ThickRect(graphics, control.Dimensions.X - 4 * control.Pixels, control.Dimensions.Y - 4 * control.Pixels, control.Location.X + 2 * control.Pixels, control.Location.Y + 2 * control.Pixels, control.Highlight, control.Pixels);
+                    }
+                }
+            }
+        }
     }
 }
 
