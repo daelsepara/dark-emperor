@@ -625,7 +625,10 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer)
         {
-            Graphics::FillWindow(graphics, scene.Background);
+            if (scene.Background != 0)
+            {
+                Graphics::FillWindow(graphics, scene.Background);
+            }
 
             Graphics::Overlay(graphics, scene);
         }
@@ -636,7 +639,12 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer && scenes.size() > 0)
         {
-            Graphics::FillWindow(graphics, scenes.front().get().Background);
+            auto &front = scenes.front().get();
+
+            if (front.Background != 0)
+            {
+                Graphics::FillWindow(graphics, front.Background);
+            }
 
             for (auto &scene : scenes)
             {
