@@ -41,6 +41,9 @@ namespace DarkEmperor
         // hex
         Points Hex = {};
 
+        // flat / pointed orientation
+        bool Flat = false;
+
         Element() {}
     };
 

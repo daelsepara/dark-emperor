@@ -558,6 +558,25 @@ namespace DarkEmperor::Graphics
     {
         if (element.Hex.size() > 0)
         {
+            // assumes that hex definition already includes the offset
+            if (element.Texture != nullptr)
+            {
+                Graphics::RenderHex(graphics, element.Texture, element.Hex, Point(0, 0), element.Flat);
+            }
+            else
+            {
+                if (element.Background != 0)
+                {
+                    // draw filled hex
+                    Graphics::RenderHex(graphics, element.Hex, Point(0, 0), element.Background, element.Flat);
+                }
+
+                if (element.Border != 0)
+                {
+                    // draw hex outline
+                    Graphics::DrawPolygon(graphics, element.Hex, element.Border);
+                }
+            }
         }
         else if (element.Texture != nullptr)
         {
