@@ -620,7 +620,12 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer && scenes.size() > 0)
         {
-            Graphics::FillWindow(graphics, scenes.front().get().Background);
+            auto &front = scenes.front().get();
+
+            if (front.Background != 0)
+            {
+                Graphics::FillWindow(graphics, front.Background);
+            }
 
             for (auto &scene : scenes)
             {
