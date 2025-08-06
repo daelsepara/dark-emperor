@@ -606,7 +606,10 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer)
         {
-            Graphics::FillWindow(graphics, scene.Background);
+            if (scene.Background != 0)
+            {
+                Graphics::FillWindow(graphics, scene.Background);
+            }
 
             Graphics::Overlay(graphics, scene);
         }
