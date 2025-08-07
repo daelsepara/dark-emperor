@@ -567,12 +567,16 @@ namespace DarkEmperor::Graphics
             {
                 if (element.Background != 0)
                 {
+                    Graphics::SetRenderDrawColor(graphics, element.Background);
+
                     // draw filled hex
                     Graphics::RenderHex(graphics, element.Hex, Point(0, 0), element.Background, element.Flat);
                 }
 
                 if (element.Border != 0)
                 {
+                    Graphics::SetRenderDrawColor(graphics, element.Border);
+
                     // draw hex outline
                     Graphics::DrawPolygon(graphics, element.Hex, element.Border);
                 }
@@ -593,6 +597,8 @@ namespace DarkEmperor::Graphics
         // draw rectangular outline around element
         if (element.Hex.size() == 0 && element.Border != 0)
         {
+            Graphics::SetRenderDrawColor(graphics, element.Border);
+
             Graphics::ThickRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Border, element.BorderSize);
         }
     }
