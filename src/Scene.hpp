@@ -45,6 +45,11 @@ namespace DarkEmperor
         bool Flat = false;
 
         Element() {}
+
+        Element(SDL_Texture *texture, Point location) : Location(location), Texture(texture)
+        {
+            Asset::Size(this->Texture, &this->Dimensions.X, &this->Dimensions.Y);
+        }
     };
 
     typedef List<Element> Elements;
@@ -67,6 +72,10 @@ namespace DarkEmperor
         Point ClipDimensions = Point(0, 0);
 
         Scene() {}
+
+        void Add(Element element) { this->Elements.push_back(element); }
+
+        void Add(Controls::Base control) { this->Controls.push_back(control); }
     };
 
     typedef List<Reference<Scene>> Scenes;
