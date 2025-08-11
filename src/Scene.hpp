@@ -6,6 +6,7 @@
 
 #include "Asset.hpp"
 #include "Controls.hpp"
+#include "Map.hpp"
 
 // classes and functions to define objects that will be rendered on screen
 namespace DarkEmperor
@@ -79,6 +80,113 @@ namespace DarkEmperor
     };
 
     typedef List<Reference<Scene>> Scenes;
+
+    Scene MapScene(Map &map, Uint32 background = 0)
+    {
+        auto scene = Scene();
+
+        scene.Background = background;
+
+        // precalculate hex (on-screen) coordinates and offset
+        auto hex = DarkEmperor::Vertices(Point(0, 0), map.Size, map.Flat);
+
+        auto offset_hex = Points();
+
+        auto min_x = hex[0].X;
+
+        auto min_y = hex[0].Y;
+
+        for (auto i = 0; i < hex.size(); i++)
+        {
+            min_x = std::min(min_x, hex[i].X);
+
+            min_y = std::min(min_y, hex[i].Y);
+        }
+
+        for (auto i = 0; i < hex.size(); i++)
+        {
+            offset_hex.push_back(hex[i] - Point(min_x, min_y));
+        }
+
+        for (auto y = map.View.Y; y < map.View.Y + map.Limit.Y; y++)
+        {
+            auto cy = 0;
+
+            for (auto x = map.View.X; x < map.View.X + map.Limit.X; x++)
+            {
+                auto &tile = map[Point(x, y)];
+
+                auto point = tile.Point - map.View;
+
+                auto cx = 0;
+
+                // calculate hex center locations
+                if (map.Flat)
+                {
+                    auto hex_offset = DarkEmperor::Scale / 2.0 * (point.X % 2 + 1);
+
+                    cy = int((DarkEmperor::Scale * point.Y + hex_offset) * map.Size);
+
+                    cx = int(point.X * DarkEmperor::Offset * map.Size);
+                }
+                else
+                {
+                    auto hex_offset = DarkEmperor::Scale / 2.0 * (point.Y % 2 + 1);
+
+                    cx = int((DarkEmperor::Scale * point.X + hex_offset) * map.Size);
+
+                    cy = int(point.Y * DarkEmperor::Offset * map.Size);
+                }
+
+                auto element = Element();
+
+                element.Texture = Asset::Get(tile.Asset);
+
+                if (element.Texture)
+                {
+                    // get texture dimensions
+                    auto terrain_w = Asset::Width(element.Texture);
+
+                    auto terrain_h = Asset::Height(element.Texture);
+
+                    // calculate terrain tile offsets (to center it within the hex)
+                    auto terrain_x = cx - terrain_w / 2;
+
+                    auto terrain_y = cy - terrain_h / 2;
+
+                    auto offset = map.Draw + Point(terrain_x, terrain_y);
+
+                    element.Hex = DarkEmperor::Add(offset_hex, offset);
+                }
+                else
+                {
+                    // set hex colors
+                    element.Background = tile.Background;
+
+                    element.Border = tile.Border;
+
+                    // add hex outline / background
+                    element.Hex = DarkEmperor::Add(hex, map.Draw + Point(cx, cy));
+                }
+
+                scene.Add(element);
+
+                // add outline (on textured hex)
+                if (element.Texture && tile.Border != 0)
+                {
+                    auto outline = Element();
+
+                    outline.Border = tile.Border;
+
+                    outline.Hex = DarkEmperor::Add(hex, map.Draw + Point(cx, cy));
+
+                    scene.Add(outline);
+                }
+            }
+        }
+
+        return scene;
+    }
 }
 
 #endif

@@ -43,16 +43,23 @@ namespace DarkEmperor
         return DarkEmperor::Find(vector, key) != vector.end();
     }
 
-    // unordered mapping
-    template <typename T, typename R>
-    using UnorderedMap = std::unordered_map<T, R>;
-
     // search for a key in a vector (of type/objects) and use a custom compare function
     template <typename T, typename R = typename List<T>::const_iterator>
     R Find(List<T> &vector, T &key, bool F(T &, T &))
     {
         return std::find_if(vector.begin(), vector.end(), [&](T &f)
                             { return F(key, f); });
+    }
+
+    // unordered mapping
+    template <typename T, typename R>
+    using UnorderedMap = std::unordered_map<T, R>;
+
+    // find key in map
+    template <typename T, typename R>
+    bool Has(UnorderedMap<T, R> map, T key)
+    {
+        return map.find(key) != map.end();
     }
 }
 

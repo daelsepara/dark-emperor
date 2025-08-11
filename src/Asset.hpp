@@ -6,6 +6,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "nlohmann/json.hpp"
+
 #include "Color.hpp"
 #include "Templates.hpp"
 
@@ -96,7 +98,47 @@ namespace DarkEmperor::Asset
         return texture;
     }
 
-    UnorderedMap<int, std::string> Assets = {};
+    UnorderedMap<int, SDL_Texture *> Textures = {};
+
+    UnorderedMap<std::string, int> Ids = {};
+
+    template <typename T>
+    void Free(std::unordered_map<T, SDL_Texture *> &textures)
+    {
+        if (!textures.empty())
+        {
+            for (auto &texture : textures)
+            {
+                Asset::Free(&texture.second);
+            }
+
+            textures.clear();
+        }
+    }
+
+    // retrieve texture based on id
+    SDL_Texture *Get(int asset)
+    {
+        return DarkEmperor::Has(Asset::Textures, asset) ? Asset::Textures[asset] : nullptr;
+    }
+
+    // clears (frees) all textures
+    void ClearTextures()
+    {
+        Asset::Free(Asset::Textures);
+
+        Asset::Ids.clear();
+    }
+
+    void LoadTextures(const char *assets)
+    {
+        Asset::ClearTextures();
+    }
+
+    void LoadTextures(std::string assets)
+    {
+        Asset::LoadTextures(assets.c_str());
+    }
 }
 
 #endif

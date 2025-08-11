@@ -280,6 +280,18 @@ namespace DarkEmperor
         {TerrainType::SETTLED, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
         {TerrainType::MAGIC_HEX, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}},
         {TerrainType::BATTLEFIELD, {UnitType::AIR, UnitType::GROUND, UnitType::LEADER}}};
+
+    Points Add(Points &points, Point origin)
+    {
+        auto translated = Points();
+
+        for (auto point : points)
+        {
+            translated.push_back(point + origin);
+        }
+
+        return points;
+    }
 }
 
 #endif

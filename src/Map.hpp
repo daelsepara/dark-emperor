@@ -1,5 +1,5 @@
-#ifndef __HEX_MAP__
-#define __HEX_MAP__
+#ifndef __MAP__
+#define __MAP__
 
 #include <cmath>
 #include <vector>
@@ -99,7 +99,11 @@ namespace DarkEmperor
         // asset number
         int Asset = -1;
 
-        Uint32 Color = 0;
+        // tile outline
+        Uint32 Border = 0;
+
+        // tile background
+        Uint32 Background = 0;
 
         void Initialize(int x, int y, bool flat)
         {
