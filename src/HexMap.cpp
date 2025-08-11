@@ -1,6 +1,4 @@
-#include "Asset.hpp"
-#include "Graphics.hpp"
-#include "Map.hpp"
+#include "Input.hpp"
 #include "Utilities.hpp"
 
 namespace DarkEmperor
@@ -92,6 +90,8 @@ namespace DarkEmperor
         {
             offset_hex.push_back(hex[i] - Point(min_x, min_y));
         }
+
+        Scene scene = Scene();
 
         while (true)
         {

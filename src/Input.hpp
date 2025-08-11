@@ -56,6 +56,52 @@ namespace DarkEmperor::Input
 
         return n_gamepads;
     }
+
+    // wait for button (gamepad/mouse) click or the return key
+    void WaitForNext(Graphics::Base &graphics, Scene &scene)
+    {
+        SDL_Event result;
+
+        while (true)
+        {
+            Graphics::Render(graphics, scene);
+
+            SDL_WaitEventTimeout(&result, 100);
+
+            if (result.type == SDL_QUIT)
+            {
+                break;
+            }
+            else if (result.type == SDL_WINDOWEVENT)
+            {
+                Graphics::HandleWindowEvent(result, graphics);
+            }
+            else if (result.type == SDL_CONTROLLERDEVICEADDED)
+            {
+                Input::InitializeGamePads();
+            }
+            else if (result.type == SDL_KEYDOWN)
+            {
+                if (result.key.keysym.sym == SDLK_KP_ENTER || result.key.keysym.sym == SDLK_RETURN || result.key.keysym.sym == SDLK_RETURN2)
+                {
+                    break;
+                }
+            }
+            else if (result.type == SDL_CONTROLLERBUTTONUP)
+            {
+                if (result.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+                {
+                    break;
+                }
+            }
+            else if (result.type == SDL_MOUSEBUTTONUP && result.button.button == SDL_BUTTON_LEFT)
+            {
+                break;
+            }
+
+            SDL_FlushEvent(result.type);
+        }
+    }
 }
 
 #endif
