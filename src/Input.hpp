@@ -64,7 +64,7 @@ namespace DarkEmperor::Input
 
         while (true)
         {
-            Graphics::Render(graphics, scene);
+            Graphics::RenderNow(graphics, scene);
 
             SDL_WaitEventTimeout(&result, 100);
 

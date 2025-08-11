@@ -223,18 +223,6 @@ namespace DarkEmperor::Graphics
         }
     }
 
-    // send to hardware / software renderer
-    void RenderNow(Base &graphics)
-    {
-        if (graphics.Renderer)
-        {
-            // show scanlines (if enabled)
-            Graphics::Scanlines(graphics);
-
-            SDL_RenderPresent(graphics.Renderer);
-        }
-    }
-
     // define an rectangle and prepare color
     SDL_Rect CreateRect(Graphics::Base &graphics, int w, int h, int x, int y, int color)
     {
@@ -679,6 +667,38 @@ namespace DarkEmperor::Graphics
                     }
                 }
             }
+        }
+    }
+
+    // send to hardware / software renderer
+    void RenderNow(Base &graphics)
+    {
+        if (graphics.Renderer)
+        {
+            // show scanlines (if enabled)
+            Graphics::Scanlines(graphics);
+
+            SDL_RenderPresent(graphics.Renderer);
+        }
+    }
+
+    void RenderNow(Base &graphics, Scene &scene)
+    {
+        if (graphics.Renderer)
+        {
+            Graphics::Render(graphics, scene);
+
+            Graphics::RenderNow(graphics);
+        }
+    }
+
+    void RenderNow(Graphics::Base &graphics, Scenes scenes)
+    {
+        if (graphics.Renderer)
+        {
+            Graphics::Render(graphics, scenes);
+
+            Graphics::RenderNow(graphics);
         }
     }
 }
