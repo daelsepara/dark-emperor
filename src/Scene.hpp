@@ -81,7 +81,7 @@ namespace DarkEmperor
 
     typedef List<Reference<Scene>> Scenes;
 
-    Scene MapScene(Map &map, Uint32 background = 0)
+    Scene MapScene(Map &map, Units &units, Uint32 background = 0)
     {
         auto scene = Scene();
 
@@ -169,7 +169,67 @@ namespace DarkEmperor
                     element.Hex = DarkEmperor::Add(hex, map.Draw + Point(cx, cy));
                 }
 
+                // add hex
                 scene.Add(element);
+
+                // add unit/stack icon to the scene
+                if (tile.Units.size() > 0)
+                {
+                    auto stack = Element();
+
+                    auto first_asset = -1;
+
+                    auto assets = 0;
+
+                    for (auto &tile_unit : tile.Units)
+                    {
+                        if (tile_unit.Id >= 0 && tile_unit.Id < units.size())
+                        {
+                            auto &unit = units[tile_unit.Id];
+
+                            if (unit.Type != UnitType::NONE && unit.Asset != Asset::NONE)
+                            {
+                                if (first_asset == Asset::NONE)
+                                {
+                                    first_asset = unit.Asset;
+                                }
+
+                                assets++;
+                            }
+                        }
+                    }
+
+                    if (assets > 1)
+                    {
+                        stack.Texture = Asset::Get("MULTIPLE UNITS");
+                    }
+                    else
+                    {
+                        stack.Texture = Asset::Get(first_asset);
+
+                        // TODO: add kingdom colors
+                    }
+
+                    if (stack.Texture)
+                    {
+                        // get texture dimensions
+                        auto texture_w = Asset::Width(stack.Texture);
+
+                        auto texture_h = Asset::Height(stack.Texture);
+
+                        auto texture_x = cx - texture_w / 2;
+
+                        auto texture_y = cy - texture_h / 2;
+
+                        auto offset = map.Draw + Point(texture_x, texture_y);
+
+                        stack.Location = offset;
+
+                        stack.Dimensions = Point(texture_w, texture_h);
+                    }
+
+                    scene.Add(stack);
+                }
 
                 // add outline (on textured hex)
                 if (element.Texture && tile.Border != 0)

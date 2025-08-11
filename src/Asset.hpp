@@ -13,6 +13,8 @@
 
 namespace DarkEmperor::Asset
 {
+    const int NONE = -1;
+
     // load an image as an SDL surface
     SDL_Surface *Load(const char *image)
     {
@@ -116,10 +118,16 @@ namespace DarkEmperor::Asset
         }
     }
 
-    // retrieve texture based on id
+    // retrieve texture based on numeric id
     SDL_Texture *Get(int asset)
     {
         return DarkEmperor::Has(Asset::Textures, asset) ? Asset::Textures[asset] : nullptr;
+    }
+
+    // retrieve texture based on string id
+    SDL_Texture *Get(std::string asset)
+    {
+        return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Get(Asset::Ids[asset]) : nullptr;
     }
 
     // clears (frees) all textures
@@ -130,14 +138,47 @@ namespace DarkEmperor::Asset
         Asset::Ids.clear();
     }
 
-    void LoadTextures(const char *assets)
+    void LoadTextures(SDL_Renderer *renderer, const char *assets)
     {
         Asset::ClearTextures();
+
+        std::ifstream ifs(assets);
+
+        if (ifs.good())
+        {
+            auto data = nlohmann::json::parse(ifs);
+
+            if (!data["assets"].is_null() && data["assets"].is_array() && data["assets"].size() > 0)
+            {
+                auto id = 0;
+
+                for (auto i = 0; i < data["assets"].size(); i++)
+                {
+                    auto asset = !data["assets"][i]["id"].is_null() ? std::string(data["assets"][i]["id"]) : "";
+
+                    auto path = !data["assets"][i]["path"].is_null() ? std::string(data["assets"][i]["path"]) : "";
+
+                    if (!asset.empty() && !path.empty())
+                    {
+                        auto texture = Asset::Create(renderer, path.c_str());
+
+                        if (texture != nullptr)
+                        {
+                            Asset::Ids[asset] = id;
+
+                            Asset::Textures[id] = texture;
+
+                            id++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    void LoadTextures(std::string assets)
+    void LoadTextures(SDL_Renderer *renderer, std::string assets)
     {
-        Asset::LoadTextures(assets.c_str());
+        Asset::LoadTextures(renderer, assets.c_str());
     }
 }
 

@@ -4,8 +4,6 @@
 #include <cmath>
 #include <vector>
 
-#include "Color.hpp"
-#include "Types.hpp"
 #include "Unit.hpp"
 
 namespace DarkEmperor
@@ -97,7 +95,7 @@ namespace DarkEmperor
         Kingdom Owner = Kingdom::NONE;
 
         // asset number
-        int Asset = -1;
+        int Asset = Asset::NONE;
 
         // tile outline
         Uint32 Border = 0;
