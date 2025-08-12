@@ -209,15 +209,15 @@ namespace DarkEmperor
                     {
                         stack.Texture = Asset::Get("MULTIPLE UNITS");
 
-                        auto colors = Unit::GetColors(Kingdom::MULTIPLE);
+                        colors = Unit::GetColors(Kingdom::MULTIPLE);
                     }
                     else
                     {
                         stack.Texture = Asset::Get(first_asset);
 
-                        auto colors = Unit::GetColors(units[first].Kingdom);
+                        colors = Unit::GetColors(units[first].Kingdom);
                     }
-                    
+
                     stack.Background = colors.Square;
 
                     stack.Border = colors.Square;
