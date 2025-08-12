@@ -37,6 +37,13 @@ namespace DarkEmperor::Unit
 
         Base() {}
     };
+
+    UnorderedMap<Kingdom, ColorScheme> ColorSchemes = {};
+
+    ColorScheme GetColors(Kingdom kingdom)
+    {
+        return DarkEmperor::Has(ColorSchemes, kingdom) ? ColorSchemes[kingdom] : ColorScheme{0, 0};
+    }
 }
 
 #endif

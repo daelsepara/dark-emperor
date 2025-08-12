@@ -177,6 +177,8 @@ namespace DarkEmperor
                 {
                     auto stack = Element();
 
+                    auto first = -1;
+
                     auto first_asset = -1;
 
                     auto assets = 0;
@@ -192,6 +194,8 @@ namespace DarkEmperor
                                 if (first_asset == Asset::NONE)
                                 {
                                     first_asset = unit.Asset;
+
+                                    first = tile_unit.Id;
                                 }
 
                                 assets++;
@@ -199,16 +203,26 @@ namespace DarkEmperor
                         }
                     }
 
+                    auto colors = ColorScheme{0, 0};
+
                     if (assets > 1)
                     {
                         stack.Texture = Asset::Get("MULTIPLE UNITS");
+
+                        auto colors = Unit::GetColors(Kingdom::MULTIPLE);
                     }
                     else
                     {
                         stack.Texture = Asset::Get(first_asset);
 
-                        // TODO: add kingdom colors
+                        auto colors = Unit::GetColors(units[first].Kingdom);
                     }
+                    
+                    stack.Background = colors.Square;
+
+                    stack.Border = colors.Square;
+
+                    // TODO: add bresenham circle drawing and painting primitive similar to hex painting
 
                     if (stack.Texture)
                     {

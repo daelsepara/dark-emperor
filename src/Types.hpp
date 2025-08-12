@@ -67,7 +67,8 @@ namespace DarkEmperor
         THE_SCYTHE,
         STARKEEP,
         AHAUTSIERON,
-        ZOLAHAURESLOR
+        ZOLAHAURESLOR,
+        MULTIPLE
     };
 
     // individual unit id (id, type, kingdom)
@@ -292,6 +293,14 @@ namespace DarkEmperor
 
         return points;
     }
+
+    typedef struct ColorScheme
+    {
+        Uint32 Square = 0;
+
+        Uint32 Circle = 0;
+
+    } ColorScheme;
 }
 
 #endif
