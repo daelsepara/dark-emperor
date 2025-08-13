@@ -295,6 +295,99 @@ namespace DarkEmperor::Graphics
         SDL_RenderDrawLines(graphics.Renderer, points, 2);
     }
 
+    // mid-point function for filled circle
+    void MidPointFilled(Base &graphics, Point center, int x, int y, Uint32 color)
+    {
+        Graphics::SetRenderDrawColor(graphics, color);
+
+        Graphics::DrawLine(graphics, Point(center.X - x, center.Y - y), Point(center.X + x, center.Y - y), Point(0, 0), color);
+
+        Graphics::DrawLine(graphics, Point(center.X - x, center.Y + y), Point(center.X + x, center.Y + y), Point(0, 0), color);
+
+        Graphics::DrawLine(graphics, Point(center.X - y, center.Y - x), Point(center.X + y, center.Y - x), Point(0, 0), color);
+
+        Graphics::DrawLine(graphics, Point(center.X - y, center.Y + x), Point(center.X + y, center.Y + x), Point(0, 0), color);
+    }
+
+    // mid-point function for circle outline
+    void MidPointBorder(Base &graphics, Point center, int x, int y, Uint32 color)
+    {
+        Graphics::SetRenderDrawColor(graphics, color);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X - x, center.Y - y);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X + x, center.Y - y);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X - x, center.Y + y);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X + x, center.Y + y);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X - y, center.Y - x);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X + y, center.Y - x);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X - y, center.Y + x);
+
+        SDL_RenderDrawPoint(graphics.Renderer, center.X + y, center.Y + x);
+    }
+
+    // function pointer for any of the two MidPoint functions above
+    typedef void (*MidPoint)(Graphics::Base &, Point, int, int, Uint32);
+
+    // render circle using mid-point algorithm, can be used to render filled/empty circle depending on the function passed
+    void RenderCircle(Base &graphics, Point center, int radius, Uint32 color, MidPoint midpoint)
+    {
+        auto d = radius * 2;
+
+        auto x = radius - 1;
+
+        auto y = 0;
+
+        auto tx = 1;
+
+        auto ty = 1;
+
+        auto error = (tx - d);
+
+        while (x >= y)
+        {
+            midpoint(graphics, center, x, y, color);
+
+            if (error <= 0)
+            {
+                ++y;
+
+                error += ty;
+
+                ty += 2;
+            }
+
+            if (error > 0)
+            {
+                --x;
+
+                tx += 2;
+
+                error += (tx - d);
+            }
+        }
+    }
+
+    // draw circle (filled circles should have non-zero background color)
+    void DrawCircle(Base &graphics, Point center, int radius, Uint32 border, Uint32 background)
+    {
+        // if background color is not empty, render a filled-circle first
+        if (background != 0)
+        {
+            Graphics::RenderCircle(graphics, center, radius, background, Graphics::MidPointFilled);
+        }
+
+        if (border != background)
+        {
+            Graphics::RenderCircle(graphics, center, radius, border, Graphics::MidPointBorder);
+        }
+    }
+
     // draw polygon outline
     void DrawPolygon(Base &graphics, Points polygon, int offset_x, int offset_y, Uint32 color)
     {
@@ -670,7 +763,7 @@ namespace DarkEmperor::Graphics
         }
     }
 
-    // send to hardware / software renderer
+    // send to hardware / software render
     void RenderNow(Base &graphics)
     {
         if (graphics.Renderer)

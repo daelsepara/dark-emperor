@@ -172,6 +172,9 @@ namespace DarkEmperor
                             // render texture within hex boundaries
                             Graphics::RenderHex(graphics, terrain, offset_hex, offset, map.Flat);
                         }
+
+                        // draw circle
+                        Graphics::DrawCircle(graphics, map.Draw + Point(cx, cy), 32, Color::Active, Color::Highlight);
                     }
 
                     // draw hex outline
