@@ -28,6 +28,8 @@ namespace DarkEmperor
             terrain = Asset::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
         }
 
+        auto grass = Asset::Create(graphics.Renderer, "images/grass_alt.png");
+
         auto terrain_w = Asset::Width(terrain);
 
         auto terrain_h = Asset::Height(terrain);
@@ -173,8 +175,16 @@ namespace DarkEmperor
                             Graphics::RenderHex(graphics, terrain, offset_hex, offset, map.Flat);
                         }
 
-                        // draw circle
-                        Graphics::DrawCircle(graphics, map.Draw + Point(cx, cy), 32, Color::Active, Color::Highlight);
+                        if (crop)
+                        {
+                            // draw texture within circle
+                            Graphics::RenderCircle(graphics, grass, map.Draw + Point(cx, cy), 32, 0);
+                        }
+                        else
+                        {
+                            // draw filled circle
+                            Graphics::DrawCircle(graphics, map.Draw + Point(cx, cy), 32, Color::Active, Color::Highlight);
+                        }
                     }
 
                     // draw hex outline
@@ -217,6 +227,8 @@ namespace DarkEmperor
 
             SDL_FlushEvent(result.type);
         }
+
+        Asset::Free(&grass);
 
         Asset::Free(&terrain);
 
