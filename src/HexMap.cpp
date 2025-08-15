@@ -178,12 +178,12 @@ namespace DarkEmperor
                         if (crop)
                         {
                             // draw texture within circle
-                            Graphics::RenderCircle(graphics, grass, map.Draw + Point(cx, cy), 32, 0);
+                            Graphics::RenderCircle(graphics, grass, map.Draw + Point(cx, cy), std::max(32, map.Size - 22), 0);
                         }
                         else
                         {
                             // draw filled circle
-                            Graphics::DrawCircle(graphics, map.Draw + Point(cx, cy), 32, Color::Active, Color::Highlight);
+                            Graphics::DrawCircle(graphics, map.Draw + Point(cx, cy), std::max(32, map.Size - 22), Color::Active, Color::Highlight);
                         }
                     }
 
