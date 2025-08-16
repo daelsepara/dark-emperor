@@ -12,7 +12,7 @@ namespace DarkEmperor::Controls
 
     int Default = -1;
 
-    typedef struct Set
+    struct Set
     {
         // ID
         int Me = -1;
@@ -28,9 +28,9 @@ namespace DarkEmperor::Controls
 
         // ID of control below this control, equal to ID if none
         int Down = -1;
-    } IdSet;
+    };
 
-    typedef struct MapControl
+    struct MapControl
     {
         // location on the map (hex)
         Point Coordinates = Point(-1, -1);
@@ -43,7 +43,7 @@ namespace DarkEmperor::Controls
         // hex orientation is flat
         bool Flat = false;
 
-    } MapControl;
+    };
 
     class Base
     {

@@ -72,7 +72,7 @@ namespace DarkEmperor
     };
 
     // individual unit id (id, type, kingdom)
-    typedef struct UnitId
+    struct UnitId
     {
         int Id = -1;
 
@@ -80,13 +80,13 @@ namespace DarkEmperor
 
         Kingdom Kingdom = Kingdom::NONE;
 
-    } UnitId;
+    };
 
     // unit id collection
     typedef List<UnitId> Stack;
 
     // for unit-stacking in the map
-    typedef struct UnitStack
+    struct UnitStack
     {
         // kingdoms
         Kingdom Kingdom = Kingdom::NONE;
@@ -97,7 +97,7 @@ namespace DarkEmperor
         // actual unit composition
         Stack Units = {};
 
-    } UnitStack;
+    };
 
     enum class Leader
     {
@@ -294,13 +294,13 @@ namespace DarkEmperor
         return points;
     }
 
-    typedef struct ColorScheme
+    struct ColorScheme
     {
         Uint32 Square = 0;
 
         Uint32 Circle = 0;
 
-    } ColorScheme;
+    };
 }
 
 #endif
