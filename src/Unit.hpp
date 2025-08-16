@@ -25,10 +25,6 @@ namespace DarkEmperor::Unit
 
         int Asset = Asset::NONE;
 
-        Uint32 Square = 0;
-
-        Uint32 Circle = 0;
-
         bool IsUndead = false;
 
         RuneType Rune = RuneType::NONE;
@@ -38,8 +34,16 @@ namespace DarkEmperor::Unit
         Base() {}
     };
 
+    // kingdom color scheme mapping
     UnorderedMap<Kingdom, ColorScheme> ColorSchemes = {};
 
+    // set kingdom's color scheme
+    void SetColor(Kingdom kingdom, ColorScheme scheme)
+    {
+        ColorSchemes[kingdom] = scheme;
+    }
+
+    // get kingdom's color scheme
     ColorScheme GetColors(Kingdom kingdom)
     {
         return DarkEmperor::Has(ColorSchemes, kingdom) ? ColorSchemes[kingdom] : ColorScheme{0, 0};

@@ -299,7 +299,6 @@ namespace DarkEmperor
         Uint32 Square = 0;
 
         Uint32 Circle = 0;
-
     };
 }
 
