@@ -94,6 +94,38 @@ namespace DarkEmperor
 
     typedef List<Reference<Scene>> Scenes;
 
+    Element ShapeElement(Map &map, Point location, Shape shape, ColorScheme colors)
+    {
+        auto element = Element();
+
+        element.Location = map.Draw + location;
+
+        if (shape == Shape::CIRCLE)
+        {
+            element.Shape = Shape::CIRCLE;
+
+            element.Border = colors.Circle;
+
+            element.Background = colors.Circle;
+
+            element.Radius = Unit::Radius;
+        }
+        else if (shape == Shape::BOX)
+        {
+            element.Shape = Shape::BOX;
+
+            element.Dimensions = Point(Unit::Side, Unit::Side);
+
+            element.Location -= element.Dimensions / 2;
+
+            element.Border = colors.Square;
+
+            element.Background = colors.Square;
+        }
+
+        return element;
+    }
+
     Scene MapScene(Map &map, Units &units, Uint32 background = 0)
     {
         auto scene = Scene();
@@ -220,6 +252,7 @@ namespace DarkEmperor
 
                     auto colors = ColorScheme{0, 0};
 
+                    // get the best texture and color scheme
                     if (assets > 1)
                     {
                         stack.Texture = Asset::Get("MULTIPLE UNITS");
@@ -233,34 +266,13 @@ namespace DarkEmperor
                         colors = Unit::GetColors(units[first].Kingdom);
                     }
 
-                    auto square = Element();
+                    // add box background
+                    scene.Add(ShapeElement(map, Point(cx, cy), Shape::BOX, colors));
 
-                    square.Dimensions = Point(Unit::Side, Unit::Side);
+                    // add circle banner
+                    scene.Add(ShapeElement(map, Point(cx, cy), Shape::CIRCLE, colors));
 
-                    square.Location = map.Draw + Point(cx, cy) - square.Dimensions / 2;
-
-                    square.Border = colors.Square;
-
-                    square.Background = colors.Square;
-
-                    square.Shape = Shape::BOX;
-
-                    scene.Add(square);
-
-                    auto circle = Element();
-
-                    circle.Location = map.Draw + Point(cx, cy);
-
-                    circle.Border = colors.Circle;
-
-                    circle.Background = colors.Circle;
-
-                    circle.Shape = Shape::CIRCLE;
-
-                    circle.Radius = Unit::Radius;
-
-                    scene.Add(circle);
-
+                    // add unit/units texture
                     if (stack.Texture)
                     {
                         // get texture dimensions
