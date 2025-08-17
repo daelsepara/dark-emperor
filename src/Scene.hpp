@@ -11,6 +11,14 @@
 // classes and functions to define objects that will be rendered on screen
 namespace DarkEmperor
 {
+    enum class Shape
+    {
+        NONE = -1,
+        HEX,
+        BOX,
+        CIRCLE
+    };
+
     // scene element base class
     class Element
     {
@@ -44,6 +52,11 @@ namespace DarkEmperor
 
         // flat / pointed orientation
         bool Flat = false;
+
+        // shape of the element
+        Shape Shape = Shape::NONE;
+
+        int Radius = 0;
 
         Element() {}
 
@@ -88,24 +101,24 @@ namespace DarkEmperor
         scene.Background = background;
 
         // precalculate hex (on-screen) coordinates and offset
-        auto hex = DarkEmperor::Vertices(Point(0, 0), map.Size, map.Flat);
+        auto hex_vertices = DarkEmperor::Vertices(Point(0, 0), map.Size, map.Flat);
 
         auto offset_hex = Points();
 
-        auto min_x = hex[0].X;
+        auto min_x = hex_vertices[0].X;
 
-        auto min_y = hex[0].Y;
+        auto min_y = hex_vertices[0].Y;
 
-        for (auto i = 0; i < hex.size(); i++)
+        for (auto i = 0; i < hex_vertices.size(); i++)
         {
-            min_x = std::min(min_x, hex[i].X);
+            min_x = std::min(min_x, hex_vertices[i].X);
 
-            min_y = std::min(min_y, hex[i].Y);
+            min_y = std::min(min_y, hex_vertices[i].Y);
         }
 
-        for (auto i = 0; i < hex.size(); i++)
+        for (auto i = 0; i < hex_vertices.size(); i++)
         {
-            offset_hex.push_back(hex[i] - Point(min_x, min_y));
+            offset_hex.push_back(hex_vertices[i] - Point(min_x, min_y));
         }
 
         for (auto y = map.View.Y; y < map.View.Y + map.Limit.Y; y++)
@@ -138,16 +151,16 @@ namespace DarkEmperor
                     cy = int(point.Y * DarkEmperor::Offset * map.Size);
                 }
 
-                auto element = Element();
+                auto hex = Element();
 
-                element.Texture = Asset::Get(tile.Asset);
+                hex.Texture = Asset::Get(tile.Asset);
 
-                if (element.Texture)
+                if (hex.Texture)
                 {
                     // get texture dimensions
-                    auto terrain_w = Asset::Width(element.Texture);
+                    auto terrain_w = Asset::Width(hex.Texture);
 
-                    auto terrain_h = Asset::Height(element.Texture);
+                    auto terrain_h = Asset::Height(hex.Texture);
 
                     // calculate terrain tile offsets (to center it within the hex)
                     auto terrain_x = cx - terrain_w / 2;
@@ -156,21 +169,23 @@ namespace DarkEmperor
 
                     auto offset = map.Draw + Point(terrain_x, terrain_y);
 
-                    element.Hex = DarkEmperor::Add(offset_hex, offset);
+                    hex.Hex = DarkEmperor::Add(offset_hex, offset);
                 }
                 else
                 {
                     // set hex colors
-                    element.Background = tile.Background;
+                    hex.Background = tile.Background;
 
-                    element.Border = tile.Border;
+                    hex.Border = tile.Border;
 
                     // add hex outline / background
-                    element.Hex = DarkEmperor::Add(hex, map.Draw + Point(cx, cy));
+                    hex.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
                 }
 
+                hex.Shape = Shape::HEX;
+
                 // add hex
-                scene.Add(element);
+                scene.Add(hex);
 
                 // add unit/stack icon to the scene
                 if (tile.Units.size() > 0)
@@ -218,9 +233,33 @@ namespace DarkEmperor
                         colors = Unit::GetColors(units[first].Kingdom);
                     }
 
-                    stack.Background = colors.Square;
+                    auto square = Element();
 
-                    stack.Border = colors.Square;
+                    square.Dimensions = Point(Unit::Side, Unit::Side);
+
+                    square.Location = map.Draw + Point(cx, cy) - square.Dimensions / 2;
+
+                    square.Border = colors.Square;
+
+                    square.Background = colors.Square;
+
+                    square.Shape = Shape::BOX;
+
+                    scene.Add(square);
+
+                    auto circle = Element();
+
+                    circle.Location = map.Draw + Point(cx, cy);
+
+                    circle.Border = colors.Circle;
+
+                    circle.Background = colors.Circle;
+
+                    circle.Shape = Shape::CIRCLE;
+
+                    circle.Radius = Unit::Radius;
+
+                    scene.Add(circle);
 
                     if (stack.Texture)
                     {
@@ -244,13 +283,13 @@ namespace DarkEmperor
                 }
 
                 // add outline (on textured hex)
-                if (element.Texture && tile.Border != 0)
+                if (hex.Texture && tile.Border != 0)
                 {
                     auto outline = Element();
 
                     outline.Border = tile.Border;
 
-                    outline.Hex = DarkEmperor::Add(hex, map.Draw + Point(cx, cy));
+                    outline.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
 
                     scene.Add(outline);
                 }

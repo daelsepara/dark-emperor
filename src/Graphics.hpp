@@ -724,50 +724,90 @@ namespace DarkEmperor::Graphics
     // render scene element
     void Render(Graphics::Base &graphics, Element element)
     {
-        if (element.Hex.size() > 0)
+        switch (element.Shape)
         {
+        case Shape::HEX:
+
             // assumes that hex definition already includes the offset
+            if (element.Hex.size() > 0)
+            {
+                // render texture within hex boundaries
+                if (element.Texture != nullptr)
+                {
+                    Graphics::RenderHex(graphics, element.Texture, element.Hex, Point(0, 0), element.Flat);
+                }
+                else
+                {
+                    if (element.Background != 0)
+                    {
+                        Graphics::SetRenderDrawColor(graphics, element.Background);
+
+                        // draw filled hex
+                        Graphics::RenderHex(graphics, element.Hex, Point(0, 0), element.Background, element.Flat);
+                    }
+
+                    if (element.Border != 0)
+                    {
+                        Graphics::SetRenderDrawColor(graphics, element.Border);
+
+                        // draw hex outline
+                        Graphics::DrawPolygon(graphics, element.Hex, element.Border);
+                    }
+                }
+            }
+
+            break;
+
+        case Shape::BOX:
+
             if (element.Texture != nullptr)
             {
-                Graphics::RenderHex(graphics, element.Texture, element.Hex, Point(0, 0), element.Flat);
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
             }
             else
             {
                 if (element.Background != 0)
                 {
+                    // fill background
                     Graphics::SetRenderDrawColor(graphics, element.Background);
 
-                    // draw filled hex
-                    Graphics::RenderHex(graphics, element.Hex, Point(0, 0), element.Background, element.Flat);
+                    Graphics::FillRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Background);
                 }
 
-                if (element.Border != 0)
+                // draw rectangular outline around element
+                if (element.Border != 0 && element.Border != element.Background)
                 {
                     Graphics::SetRenderDrawColor(graphics, element.Border);
 
-                    // draw hex outline
-                    Graphics::DrawPolygon(graphics, element.Hex, element.Border);
+                    Graphics::ThickRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Border, element.BorderSize);
                 }
             }
-        }
-        else if (element.Texture != nullptr)
-        {
-            Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
-        }
-        else if (element.Background != 0)
-        {
-            // fill background
-            Graphics::SetRenderDrawColor(graphics, element.Background);
 
-            Graphics::FillRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Background);
-        }
+            break;
 
-        // draw rectangular outline around element
-        if (element.Hex.size() == 0 && element.Border != 0)
-        {
-            Graphics::SetRenderDrawColor(graphics, element.Border);
+        case Shape::CIRCLE:
 
-            Graphics::ThickRect(graphics, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Border, element.BorderSize);
+            if (element.Texture != nullptr && element.Radius > 0)
+            {
+                // draw texture within circle
+                Graphics::RenderCircle(graphics, element.Texture, element.Location, element.Radius, 0);
+            }
+            else if (element.Radius > 0)
+            {
+                // draw filled circle
+                Graphics::DrawCircle(graphics, element.Location, element.Radius, element.Background, element.Border);
+            }
+
+            break;
+
+        default:
+
+            if (element.Texture != nullptr)
+            {
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
+            }
+
+            break;
         }
     }
 

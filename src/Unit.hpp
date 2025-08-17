@@ -6,6 +6,12 @@
 
 namespace DarkEmperor::Unit
 {
+    // size of the square sides in pixels
+    const int Side = 64;
+
+    // size of the radius
+    const int Radius = 32;
+
     class Base
     {
     public:
