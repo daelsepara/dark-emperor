@@ -604,7 +604,7 @@ namespace DarkEmperor::Graphics
     }
 
     // base render texture function
-    void RenderTexture(Base &graphics, SDL_Texture *texture, int texture_w, int texture_h, int x, int y, int bounds, int offset, int w, int h, Uint32 background)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int texture_w, int texture_h, int x, int y, int bounds, int offset, int w, int h, Uint32 border, Uint32 background)
     {
         if (graphics.Renderer)
         {
@@ -625,6 +625,13 @@ namespace DarkEmperor::Graphics
                 SDL_RenderFillRect(graphics.Renderer, &dst);
             }
 
+            if (border != 0)
+            {
+                Graphics::SetRenderDrawColor(graphics, border);
+
+                SDL_RenderDrawRect(graphics.Renderer, &dst);
+            }
+
             if (texture)
             {
                 SDL_RenderCopy(graphics.Renderer, texture, &src, &dst);
@@ -633,13 +640,13 @@ namespace DarkEmperor::Graphics
     }
 
     // render texture at location
-    void RenderTexture(Base &graphics, SDL_Texture *texture, int w, int h, int x, int y)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int w, int h, int x, int y, Uint32 border, Uint32 background)
     {
-        Graphics::RenderTexture(graphics, texture, w, h, x, y, h, 0, w, h, 0);
+        Graphics::RenderTexture(graphics, texture, w, h, x, y, h, 0, w, h, border, background);
     }
 
     // render texture at location
-    void RenderTexture(Base &graphics, SDL_Texture *texture, int x, int y)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int x, int y, Uint32 border, Uint32 background)
     {
         auto texture_w = 0;
 
@@ -647,13 +654,13 @@ namespace DarkEmperor::Graphics
 
         Asset::Size(texture, &texture_w, &texture_h);
 
-        Graphics::RenderTexture(graphics, texture, texture_w, texture_h, x, y);
+        Graphics::RenderTexture(graphics, texture, texture_w, texture_h, x, y, border, background);
     }
 
     // render texture at location
-    void RenderTexture(Base &graphics, SDL_Texture *texture, Point point)
+    void RenderTexture(Base &graphics, SDL_Texture *texture, Point point, Uint32 border, Uint32 background)
     {
-        Graphics::RenderTexture(graphics, texture, point.X, point.Y);
+        Graphics::RenderTexture(graphics, texture, point.X, point.Y, border, background);
     }
 
     // handle window events
@@ -733,7 +740,7 @@ namespace DarkEmperor::Graphics
         }
         else if (element.Texture != nullptr)
         {
-            Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Background);
+            Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
         }
         else if (element.Background != 0)
         {
