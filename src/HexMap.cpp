@@ -151,7 +151,7 @@ namespace DarkEmperor
                         auto offset = map.Draw + Point(texture_x, texture_y);
 
                         // show texture
-                        Graphics::RenderTexture(graphics, texture, offset, 0, 0);
+                        Graphics::RenderTexture(graphics, texture, offset);
 
                         Graphics::DrawRect(graphics, texture_w, texture_h, offset, Color::Highlight);
                     }
@@ -167,7 +167,7 @@ namespace DarkEmperor
                         if (blind)
                         {
                             // render texture at location
-                            Graphics::RenderTexture(graphics, terrain, offset, 0, 0);
+                            Graphics::RenderTexture(graphics, terrain, offset);
                         }
                         else
                         {

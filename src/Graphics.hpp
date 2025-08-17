@@ -663,6 +663,18 @@ namespace DarkEmperor::Graphics
         Graphics::RenderTexture(graphics, texture, point.X, point.Y, border, background);
     }
 
+    // render texture at location
+    void RenderTexture(Base &graphics, SDL_Texture *texture, int x, int y)
+    {
+        Graphics::RenderTexture(graphics, texture, x, y, 0, 0);
+    }
+
+    // render texture at location
+    void RenderTexture(Base &graphics, SDL_Texture *texture, Point point)
+    {
+        Graphics::RenderTexture(graphics, texture, point, 0, 0);
+    }
+
     // handle window events
     void HandleWindowEvent(SDL_Event &result, Graphics::Base &graphics)
     {
