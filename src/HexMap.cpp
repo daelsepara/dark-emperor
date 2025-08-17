@@ -234,6 +234,8 @@ namespace DarkEmperor
 
         Asset::Free(&texture);
 
+        Asset::ClearTextures();
+
         Graphics::Quit(graphics);
     }
 }

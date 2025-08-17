@@ -105,7 +105,7 @@ namespace DarkEmperor::Asset
     UnorderedMap<std::string, int> Ids = {};
 
     template <typename T>
-    void Free(std::unordered_map<T, SDL_Texture *> &textures)
+    void Free(UnorderedMap<T, SDL_Texture *> &textures)
     {
         if (!textures.empty())
         {

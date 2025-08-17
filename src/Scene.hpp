@@ -222,8 +222,6 @@ namespace DarkEmperor
 
                     stack.Border = colors.Square;
 
-                    // TODO: add bresenham circle drawing and painting primitive similar to hex painting
-
                     if (stack.Texture)
                     {
                         // get texture dimensions
