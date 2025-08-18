@@ -65,6 +65,15 @@ namespace DarkEmperor::Unit
         {Mercenary::SAAR, {Color::White, Color::Blue}},
         {Mercenary::HOUNDMASTER, {Color::White, Color::Purple}}};
 
+    UnorderedMap<UnitType, ColorScheme> UnitColors = {
+        {UnitType::BATTLEFIELD, {Color::Grey, Color::White}},
+        {UnitType::MAGICAL_DEVICE, {Color::Black, Color::Black}},
+        {UnitType::MAGICAL_DEVICE, {Color::Black, Color::Black}},
+        {UnitType::TRENCH, {Color::White, Color::White}},
+        {UnitType::FLAME, {Color::White, Color::White}},
+        {UnitType::WEAPON, {Color::White, Color::White}},
+        {UnitType::MONSTER, {Color::White, Color::White}}};
+
     // set kingdom's color scheme
     void SetColor(Kingdom kingdom, ColorScheme scheme)
     {
@@ -89,7 +98,19 @@ namespace DarkEmperor::Unit
         return DarkEmperor::Has(MercenaryColors, mercenary) ? MercenaryColors[mercenary] : ColorScheme{0, 0};
     }
 
-    // get color scheme (KINGDOM/MERCENARY/NONE)
+    // set unit color scheme (non-KINGDOM/MERCENARY)
+    void SetColor(UnitType unit, ColorScheme scheme)
+    {
+        UnitColors[unit] = scheme;
+    }
+
+    // get unit color scheme (non-KINGDOM/MERCENARY)
+    ColorScheme GetColors(UnitType unit)
+    {
+        return DarkEmperor::Has(UnitColors, unit) ? UnitColors[unit] : ColorScheme{0, 0};
+    }
+
+    // get color scheme (KINGDOM/MERCENARY/UNIT)
     ColorScheme GetColors(Unit::Base &unit)
     {
         if (unit.Kingdom != Kingdom::NONE)
@@ -99,6 +120,10 @@ namespace DarkEmperor::Unit
         else if (unit.Mercenary != Mercenary::NONE)
         {
             return Unit::GetColors(unit.Mercenary);
+        }
+        else if (unit.Type != UnitType::NONE && unit.Type != UnitType::AIR && unit.Type != UnitType::GROUND && unit.Type != UnitType::NAVAL && unit.Type != UnitType::LEADER)
+        {
+            return Unit::GetColors(unit.Type);
         }
         else
         {
