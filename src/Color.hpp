@@ -38,6 +38,20 @@ namespace DarkEmperor::Color
 
     Uint32 Black = 0xFF000000;
 
+    Uint32 Blue = 0xFF00FFFF;
+
+    Uint32 Red = 0xFFFF0000;
+
+    Uint32 Yellow = 0xFFFFFF00;
+
+    Uint32 Green = 0xFF008000;
+
+    Uint32 Purple = 0xFF800080;
+
+    Uint32 Orange = 0xFFCD8500;
+
+    Uint32 Brown = 0xFFA68064;
+
     SDL_Color S(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     {
         return {r, g, b, a};

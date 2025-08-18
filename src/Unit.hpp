@@ -19,6 +19,8 @@ namespace DarkEmperor::Unit
 
         Kingdom Kingdom = Kingdom::NONE;
 
+        Mercenary Mercenary = Mercenary::NONE;
+
         int Id = -1;
 
         int Combat = -1;
@@ -41,18 +43,67 @@ namespace DarkEmperor::Unit
     };
 
     // kingdom color scheme mapping
-    UnorderedMap<Kingdom, ColorScheme> ColorSchemes = {};
+    UnorderedMap<Kingdom, ColorScheme> KingdomColors = {
+        {Kingdom::NECROMANCER, {Color::Grey, Color::Grey}},
+        {Kingdom::TAL_PLETOR, {Color::Grey, Color::Yellow}},
+        {Kingdom::ZOLAHAURESLOR, {Color::Purple, Color::Purple}},
+        {Kingdom::STAVROR, {Color::Green, Color::Orange}},
+        {Kingdom::THE_SCYTHE, {Color::Green, Color::White}},
+        {Kingdom::STARKEEP, {Color::Red, Color::Green}},
+        {Kingdom::KELARON_OIRET, {Color::Red, Color::Yellow}},
+        {Kingdom::FERLARIE, {Color::Blue, Color::White}},
+        {Kingdom::AHAUTSIERON, {Color::Blue, Color::Yellow}},
+        {Kingdom::LAMMARECH, {Color::Brown, Color::Orange}},
+        {Kingdom::LOYMARECH, {Color::Brown, Color::Yellow}}};
+
+    // mercenary color scheme mapping
+    UnorderedMap<Mercenary, ColorScheme> MercenaryColors = {
+        {Mercenary::COS_DOL_COS, {Color::White, Color::Yellow}},
+        {Mercenary::LORD_MONTOY, {Color::White, Color::Red}},
+        {Mercenary::FERNAN_CONNIVER, {Color::White, Color::Green}},
+        {Mercenary::SILWER_FLAGRIEL, {Color::White, Color::Orange}},
+        {Mercenary::SAAR, {Color::White, Color::Blue}},
+        {Mercenary::HOUNDMASTER, {Color::White, Color::Purple}}};
 
     // set kingdom's color scheme
     void SetColor(Kingdom kingdom, ColorScheme scheme)
     {
-        ColorSchemes[kingdom] = scheme;
+        KingdomColors[kingdom] = scheme;
     }
 
     // get kingdom's color scheme
     ColorScheme GetColors(Kingdom kingdom)
     {
-        return DarkEmperor::Has(ColorSchemes, kingdom) ? ColorSchemes[kingdom] : ColorScheme{0, 0};
+        return DarkEmperor::Has(KingdomColors, kingdom) ? KingdomColors[kingdom] : ColorScheme{0, 0};
+    }
+
+    // set mercenary's color scheme
+    void SetColor(Mercenary Mercenary, ColorScheme scheme)
+    {
+        MercenaryColors[Mercenary] = scheme;
+    }
+
+    // get mercenary's color scheme
+    ColorScheme GetColors(Mercenary mercenary)
+    {
+        return DarkEmperor::Has(MercenaryColors, mercenary) ? MercenaryColors[mercenary] : ColorScheme{0, 0};
+    }
+
+    // get color scheme (KINGDOM/MERCENARY/NONE)
+    ColorScheme GetColors(Unit::Base &unit)
+    {
+        if (unit.Kingdom != Kingdom::NONE)
+        {
+            return Unit::GetColors(unit.Kingdom);
+        }
+        else if (unit.Mercenary != Mercenary::NONE)
+        {
+            return Unit::GetColors(unit.Mercenary);
+        }
+        else
+        {
+            return {0, 0};
+        }
     }
 }
 

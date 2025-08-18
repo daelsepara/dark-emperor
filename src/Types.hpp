@@ -71,34 +71,6 @@ namespace DarkEmperor
         MULTIPLE
     };
 
-    // individual unit id (id, type, kingdom)
-    struct UnitId
-    {
-        int Id = -1;
-
-        UnitType Type = UnitType::NONE;
-
-        Kingdom Kingdom = Kingdom::NONE;
-
-    };
-
-    // unit id collection
-    typedef List<UnitId> Stack;
-
-    // for unit-stacking in the map
-    struct UnitStack
-    {
-        // kingdoms
-        Kingdom Kingdom = Kingdom::NONE;
-
-        // lowest unit type denominator (e.g. GROUND, AIR, NAVAL)
-        UnitType Type = UnitType::NONE;
-
-        // actual unit composition
-        Stack Units = {};
-
-    };
-
     enum class Leader
     {
         NONE = -1,
@@ -128,7 +100,7 @@ namespace DarkEmperor
         HOUNDMASTER
     };
 
-    enum class MercenaryType
+    enum class Mercenary
     {
         NONE = -1,
         COS_DOL_COS,
@@ -137,6 +109,34 @@ namespace DarkEmperor
         SAAR,
         SILWER_FLAGRIEL,
         FERNAN_CONNIVER
+    };
+
+    // individual unit id (id, type, kingdom)
+    struct UnitId
+    {
+        int Id = -1;
+
+        UnitType Type = UnitType::NONE;
+
+        Kingdom Kingdom = Kingdom::NONE;
+
+        Mercenary Mercenary = Mercenary::NONE;
+    };
+
+    // unit id collection
+    typedef List<UnitId> Stack;
+
+    // for unit-stacking in the map
+    struct UnitStack
+    {
+        // kingdoms
+        Kingdom Kingdom = Kingdom::NONE;
+
+        // lowest unit type denominator (e.g. GROUND, AIR, NAVAL)
+        UnitType Type = UnitType::NONE;
+
+        // actual unit composition
+        Stack Units = {};
     };
 
     // default terrain stack limits

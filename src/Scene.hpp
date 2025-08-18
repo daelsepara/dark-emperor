@@ -263,7 +263,7 @@ namespace DarkEmperor
                     {
                         stack.Texture = Asset::Get(first_asset);
 
-                        colors = Unit::GetColors(units[first].Kingdom);
+                        colors = Unit::GetColors(units[first]);
                     }
 
                     // add box background
