@@ -31,6 +31,10 @@
         {
             "id": "CITY",
             "path": "images/terrain/castle.png"
+        },
+        {
+            "id": "PORT",
+            "path": "images/terrain/anchor.png"
         }
     ]
 }

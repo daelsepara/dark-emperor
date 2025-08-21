@@ -131,6 +131,52 @@ namespace DarkEmperor
         return element;
     }
 
+    void AddTerrainFeatures(Scene &scene, TerrainType terrain, Point location)
+    {
+        SDL_Texture *texture = nullptr;
+
+        switch (terrain)
+        {
+        case TerrainType::CITY:
+
+            texture = Asset::Get("CITY");
+
+            break;
+
+        case TerrainType::PORT:
+
+            texture = Asset::Get("PORT");
+
+            break;
+
+        default:
+
+            break;
+        }
+
+        if (texture)
+        {
+            auto feature = Element();
+
+            // set texture
+            feature.Texture = texture;
+
+            // get texture dimensions
+            auto terrain_w = Asset::Width(texture);
+
+            auto terrain_h = Asset::Height(texture);
+
+            // calculate terrain tile offsets (to center it within the hex)
+            feature.Location = location - Point(terrain_w, terrain_h) / 2;
+
+            feature.Dimensions = Point(terrain_w, terrain_h);
+
+            feature.Shape = Shape::BOX;
+
+            scene.Add(feature);
+        }
+    }
+
     Scene MapScene(Map &map, Units &units, Uint32 background = 0)
     {
         auto scene = Scene();
@@ -192,6 +238,8 @@ namespace DarkEmperor
 
                 hex.Texture = Asset::Get(tile.Asset);
 
+                hex.Shape = Shape::HEX;
+
                 if (hex.Texture)
                 {
                     // get texture dimensions
@@ -219,10 +267,25 @@ namespace DarkEmperor
                     hex.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
                 }
 
-                hex.Shape = Shape::HEX;
-
-                // add hex
+                // add hex (background textures/colors)
                 scene.Add(hex);
+
+                // add terrain features (e.g. cities, ports)
+                DarkEmperor::AddTerrainFeatures(scene, tile.Terrain, map.Draw + Point(cx, cy));
+
+                // add outline (on textured hex)
+                if (hex.Texture && tile.Border != 0)
+                {
+                    auto outline = Element();
+
+                    outline.Shape = Shape::HEX;
+
+                    outline.Border = tile.Border;
+
+                    outline.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
+
+                    scene.Add(outline);
+                }
 
                 // add unit/stack icon to the scene
                 if (tile.Units.size() > 0)
@@ -297,18 +360,6 @@ namespace DarkEmperor
                     }
 
                     scene.Add(stack);
-                }
-
-                // add outline (on textured hex)
-                if (hex.Texture && tile.Border != 0)
-                {
-                    auto outline = Element();
-
-                    outline.Border = tile.Border;
-
-                    outline.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
-
-                    scene.Add(outline);
                 }
             }
         }

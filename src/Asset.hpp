@@ -137,6 +137,9 @@ namespace DarkEmperor::Asset
     // clears (frees) all textures
     void ClearTextures()
     {
+        // LOG
+        std::cerr << "Unloading " << Asset::Textures.size() << " texture(s) ..." << std::endl;
+
         Asset::Free(Asset::Textures);
 
         Asset::Ids.clear();
@@ -150,6 +153,9 @@ namespace DarkEmperor::Asset
 
         if (ifs.good())
         {
+            // LOG
+            std::cerr << "Loading textures from " << assets << " ..." << std::endl;
+
             auto data = nlohmann::json::parse(ifs);
 
             if (!data["assets"].is_null() && data["assets"].is_array() && data["assets"].size() > 0)
@@ -177,6 +183,11 @@ namespace DarkEmperor::Asset
                     }
                 }
             }
+
+            ifs.close();
+
+            // LOG
+            std::cerr << "Loaded " << Asset::Textures.size() << " image(s) ..." << std::endl;
         }
     }
 

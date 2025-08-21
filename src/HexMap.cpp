@@ -7,6 +7,9 @@ namespace DarkEmperor
     {
         auto graphics = Graphics::Initialize("Hex Test");
 
+        // load assets
+        Asset::LoadTextures(graphics.Renderer, "assets.json");
+
         auto texture = Asset::Create(graphics.Renderer, "images/test/ninja-head.png");
 
         auto texture_w = Asset::Width(texture);
