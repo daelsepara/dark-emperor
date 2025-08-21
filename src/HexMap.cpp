@@ -7,7 +7,7 @@ namespace DarkEmperor
     {
         auto graphics = Graphics::Initialize("Hex Test");
 
-        auto texture = Asset::Create(graphics.Renderer, "images/ninja-head.png");
+        auto texture = Asset::Create(graphics.Renderer, "images/test/ninja-head.png");
 
         auto texture_w = Asset::Width(texture);
 
@@ -17,18 +17,18 @@ namespace DarkEmperor
 
         if (new_textures)
         {
-            terrain = Asset::Create(graphics.Renderer, flat ? "images/grass.png" : "images/grass_alt.png");
+            terrain = Asset::Create(graphics.Renderer, flat ? "images/test/grass.png" : "images/test/grass_alt.png");
         }
         else if (crop)
         {
-            terrain = Asset::Create(graphics.Renderer, "images/desert.png");
+            terrain = Asset::Create(graphics.Renderer, "images/test/desert.png");
         }
         else
         {
-            terrain = Asset::Create(graphics.Renderer, flat ? "images/terrain.png" : "images/terrain_alt.png");
+            terrain = Asset::Create(graphics.Renderer, flat ? "images/test/terrain.png" : "images/test/terrain_alt.png");
         }
 
-        auto grass = Asset::Create(graphics.Renderer, "images/grass_alt.png");
+        auto grass = Asset::Create(graphics.Renderer, "images/test/grass_alt.png");
 
         auto terrain_w = Asset::Width(terrain);
 

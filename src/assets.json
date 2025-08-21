@@ -1,0 +1,36 @@
+{
+    "assets": [
+        {
+            "id": "CAVALRY",
+            "path": "images/units/mounted-knight.png"
+        },
+        {
+            "id": "SAAR",
+            "path": "images/units/eagle-head.png"
+        },
+        {
+            "id": "SAARLUMEN",
+            "path": "images/units/eagle-emblem.png"
+        },
+        {
+            "id": "GREATER VAMPIRE",
+            "path": "images/units/evil-bat.png"
+        },
+        {
+            "id": "LESSER VAMPIRE",
+            "path": "images/units/vampire-cape.png"
+        },
+        {
+            "id": "INFANTRY",
+            "path": "images/units/battle-gear.png"
+        },
+        {
+            "id": "NAVAL",
+            "path": "images/units/sailboat.png"
+        },
+        {
+            "id": "CITY",
+            "path": "images/terrain/castle.png"
+        }
+    ]
+}
