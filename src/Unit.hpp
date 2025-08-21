@@ -49,7 +49,7 @@ namespace DarkEmperor::Unit
 
         Base(UnitType unit_type, int asset, std::string name) : Type(unit_type), Asset(asset), Name(name) {}
 
-        Base(Base unit, int id)
+        Base(const Base &unit, int id)
         {
             if (id < 0)
             {
