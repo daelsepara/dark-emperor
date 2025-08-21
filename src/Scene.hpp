@@ -2,6 +2,11 @@
 #define __SCENE_HPP__
 
 #include <functional>
+
+#ifndef SDL_MAIN_HANDLED
+#define SDL_MAIN_HANDLED
+#endif
+
 #include <SDL.h>
 
 #include "Asset.hpp"
