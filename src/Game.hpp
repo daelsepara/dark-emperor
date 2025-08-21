@@ -92,6 +92,14 @@ namespace DarkEmperor::Game
 
             // TODO: load tile settings
         }
+
+        // add a unit
+        void Add(Unit::Base unit)
+        {
+            auto id = int(this->Units.size());
+
+            this->Units.push_back(Unit::Base(unit, id));
+        }
     };
 }
 

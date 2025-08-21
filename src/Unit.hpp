@@ -21,6 +21,8 @@ namespace DarkEmperor::Unit
 
         Mercenary Mercenary = Mercenary::NONE;
 
+        RuneType Rune = RuneType::NONE;
+
         int Id = -1;
 
         int Combat = -1;
@@ -35,9 +37,33 @@ namespace DarkEmperor::Unit
 
         bool IsUndead = false;
 
-        RuneType Rune = RuneType::NONE;
-
         std::string Name = std::string();
+
+        Base(UnitType unit_type, DarkEmperor::Kingdom kingdom, DarkEmperor::Mercenary mercenary, RuneType rune_type, int combat, int undead, int hero, int magic, int asset, bool is_undead, std::string name) : Type(unit_type), Kingdom(kingdom), Mercenary(mercenary), Rune(rune_type), Combat(combat), Undead(undead), Hero(hero), Magic(magic), Asset(asset), IsUndead(is_undead), Name(name) {}
+
+        Base(UnitType unit_type, DarkEmperor::Kingdom kingdom, int combat, int asset, std::string name) : Type(unit_type), Kingdom(kingdom), Combat(combat), Asset(asset), Name(name) {}
+
+        Base(UnitType unit_type, DarkEmperor::Mercenary mercenary, int combat, int asset, std::string name) : Type(unit_type), Mercenary(mercenary), Combat(combat), Asset(asset), Name(name) {}
+
+        Base(RuneType rune_type, int hero, int magic, int asset, std::string name) : Rune(rune_type), Hero(hero), Magic(magic), Asset(asset), Name(name) {}
+
+        Base(UnitType unit_type, int asset, std::string name) : Type(unit_type), Asset(asset), Name(name) {}
+
+        Base(Base unit, int id)
+        {
+            if (id < 0)
+            {
+                std::string error_message = "Invalid unit id: " + std::to_string(id);
+
+                throw std::invalid_argument(error_message);
+            }
+            else
+            {
+                *this = unit;
+
+                this->Id = id;
+            }
+        }
 
         Base() {}
     };
