@@ -30,6 +30,7 @@ namespace DarkEmperor
         GROUND,
         AIR,
         NAVAL,
+        SIEGE,
         LEADER,
         MONSTER,
         BATTLEFIELD,

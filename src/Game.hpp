@@ -96,6 +96,7 @@ namespace DarkEmperor::Game
         // add a unit
         void Add(Unit::Base unit)
         {
+            // add unit to list
             auto id = int(this->Units.size());
 
             this->Units.push_back(Unit::Base(unit, id));

@@ -15,40 +15,69 @@ namespace DarkEmperor::Unit
     class Base
     {
     public:
+        // type of unit (see Types.hpp)
         UnitType Type = UnitType::NONE;
 
+        // leader (see Types.hpp)
+        Leader Leader = Leader::NONE;
+
+        // kingdom affiliation (see Types.hpp)
         Kingdom Kingdom = Kingdom::NONE;
 
+        // mercenary affiliation (see Types.hpp)
         Mercenary Mercenary = Mercenary::NONE;
 
+        // magic rune (see Types.hpp)
         RuneType Rune = RuneType::NONE;
 
+        // unit id
         int Id = -1;
 
+        // combat strength
         int Combat = -1;
 
+        // undead combat strength
         int Undead = -1;
 
+        // hero rating
         int Hero = -1;
 
+        // magic strength
         int Magic = -1;
 
+        // asset (texture) id
         int Asset = Asset::NONE;
 
+        // flag if the unit is dead and uses undead combat strength
         bool IsUndead = false;
+
+        // for magical devices / monsters / weapons
+        bool Revealed = false;
 
         std::string Name = std::string();
 
-        Base(UnitType unit_type, DarkEmperor::Kingdom kingdom, DarkEmperor::Mercenary mercenary, RuneType rune_type, int combat, int undead, int hero, int magic, int asset, bool is_undead, std::string name) : Type(unit_type), Kingdom(kingdom), Mercenary(mercenary), Rune(rune_type), Combat(combat), Undead(undead), Hero(hero), Magic(magic), Asset(asset), IsUndead(is_undead), Name(name) {}
+        // super-constructor
+        Base(UnitType unit_type, DarkEmperor::Leader leader, DarkEmperor::Kingdom kingdom, DarkEmperor::Mercenary mercenary, RuneType rune_type, int combat, int undead, int hero, int magic, int asset, bool is_undead, std::string name) : Type(unit_type), Leader(leader), Kingdom(kingdom), Mercenary(mercenary), Rune(rune_type), Combat(combat), Undead(undead), Hero(hero), Magic(magic), Asset(asset), IsUndead(is_undead), Name(name) {}
 
-        Base(UnitType unit_type, DarkEmperor::Kingdom kingdom, int combat, int asset, std::string name) : Type(unit_type), Kingdom(kingdom), Combat(combat), Asset(asset), Name(name) {}
+        // leader constructor
+        Base(DarkEmperor::Leader leader, DarkEmperor::Kingdom kingdom, DarkEmperor::Mercenary mercenary, RuneType rune_type, int hero, int magic, int asset, std::string name) : Leader(leader), Kingdom(kingdom), Mercenary(mercenary), Rune(rune_type), Hero(hero), Magic(magic), Asset(asset), Name(name) { this->Type = UnitType::LEADER; }
 
-        Base(UnitType unit_type, DarkEmperor::Mercenary mercenary, int combat, int asset, std::string name) : Type(unit_type), Mercenary(mercenary), Combat(combat), Asset(asset), Name(name) {}
+        // air / ground / naval unit constuctor (non-mercenary)
+        Base(UnitType unit_type, DarkEmperor::Kingdom kingdom, int combat, int undead, int asset, std::string name) : Type(unit_type), Kingdom(kingdom), Combat(combat), Undead(undead), Asset(asset), Name(name) {}
 
-        Base(RuneType rune_type, int hero, int magic, int asset, std::string name) : Rune(rune_type), Hero(hero), Magic(magic), Asset(asset), Name(name) {}
+        // mercenary (non-leader)
+        Base(UnitType unit_type, DarkEmperor::Mercenary mercenary, int combat, int undead, int asset, std::string name) : Type(unit_type), Mercenary(mercenary), Combat(combat), Undead(undead), Asset(asset), Name(name) {}
 
+        // magical device / monster
+        Base(UnitType unit_type, RuneType rune_type, int hero, int magic, int asset, std::string name) : Type(unit_type), Rune(rune_type), Hero(hero), Magic(magic), Asset(asset), Name(name) {}
+
+        // weapon / entrenchments / flame marker
         Base(UnitType unit_type, int asset, std::string name) : Type(unit_type), Asset(asset), Name(name) {}
 
+        // battlefield
+        Base(UnitType unit_type, int combat, int asset, std::string name) : Type(unit_type), Combat(combat), Asset(asset), Name(name) {}
+
+        // copy constructor
         Base(const Base &unit, int id)
         {
             if (id < 0)
@@ -59,8 +88,10 @@ namespace DarkEmperor::Unit
             }
             else
             {
+                // copy unit
                 *this = unit;
 
+                // assign id
                 this->Id = id;
             }
         }
