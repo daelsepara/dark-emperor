@@ -424,7 +424,7 @@ namespace DarkEmperor
             return this->Distance(src.X, src.Y, dst.X, dst.Y);
         }
 
-        // place a unit in the map
+        // place a unit in the map tile
         void Put(Unit::Base &unit, Point point)
         {
             if (this->IsValid(point) && unit.Id >= 0)
@@ -449,7 +449,45 @@ namespace DarkEmperor
 
                 if (add_unit)
                 {
+                    // add unit
                     tile.Units.push_back({unit.Id, unit.Type, unit.Kingdom, unit.Mercenary});
+                }
+            }
+        }
+
+        // remove a unit from the map tile
+        void Remove(Unit::Base &unit, Point point)
+        {
+            if (this->IsValid(point) && unit.Id >= 0)
+            {
+                auto &tile = (*this)(point);
+
+                if (tile.Units.size() > 0)
+                {
+                    auto remove_unit = false;
+
+                    auto remove_id = -1;
+
+                    for (auto i = 0; i < tile.Units.size(); i++)
+                    {
+                        auto &search = tile.Units[i];
+
+                        // this unit is in the stack on this tile
+                        if (search.Id == unit.Id)
+                        {
+                            remove_unit = true;
+
+                            remove_id = i;
+
+                            break;
+                        }
+                    }
+
+                    // remove unit if found
+                    if (remove_unit && remove_id >= 0 && remove_id < tile.Units.size())
+                    {
+                        tile.Units.erase(tile.Units.begin() + remove_id);
+                    }
                 }
             }
         }
