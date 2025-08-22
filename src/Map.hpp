@@ -423,6 +423,36 @@ namespace DarkEmperor
         {
             return this->Distance(src.X, src.Y, dst.X, dst.Y);
         }
+
+        // place a unit in the map
+        void Put(Unit::Base &unit, Point point)
+        {
+            if (this->IsValid(point) && unit.Id >= 0)
+            {
+                auto &tile = (*this)(point);
+
+                auto add_unit = true;
+
+                if (tile.Units.size() > 0)
+                {
+                    for (auto &search : tile.Units)
+                    {
+                        // this unit is already in the stack on this tile
+                        if (search.Id == unit.Id)
+                        {
+                            add_unit = false;
+
+                            break;
+                        }
+                    }
+                }
+
+                if (add_unit)
+                {
+                    tile.Units.push_back({unit.Id, unit.Type, unit.Kingdom, unit.Mercenary});
+                }
+            }
+        }
     };
 
     Kingdom FirstKingdom(Stack &units)
