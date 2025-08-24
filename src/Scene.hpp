@@ -234,6 +234,8 @@ namespace DarkEmperor
                     cy = int(point.Y * DarkEmperor::Offset * map.Size);
                 }
 
+                auto offset = map.Draw + Point(cx, cy);
+
                 auto hex = Element();
 
                 hex.Texture = Asset::Get(tile.Asset);
@@ -252,9 +254,7 @@ namespace DarkEmperor
 
                     auto terrain_y = cy - terrain_h / 2;
 
-                    auto offset = map.Draw + Point(terrain_x, terrain_y);
-
-                    hex.Hex = DarkEmperor::Add(offset_hex, offset);
+                    hex.Hex = DarkEmperor::Add(offset_hex, map.Draw + Point(terrain_x, terrain_y));
                 }
                 else
                 {
@@ -264,14 +264,14 @@ namespace DarkEmperor
                     hex.Border = tile.Border;
 
                     // add hex outline / background
-                    hex.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
+                    hex.Hex = DarkEmperor::Add(hex_vertices, offset);
                 }
 
                 // add hex (background textures/colors)
                 scene.Add(hex);
 
                 // add terrain features (e.g. cities, ports)
-                DarkEmperor::AddTerrainFeatures(scene, tile.Terrain, map.Draw + Point(cx, cy));
+                DarkEmperor::AddTerrainFeatures(scene, tile.Terrain, offset);
 
                 // add outline (on textured hex)
                 if (hex.Texture && tile.Border != 0)
@@ -282,7 +282,7 @@ namespace DarkEmperor
 
                     outline.Border = tile.Border;
 
-                    outline.Hex = DarkEmperor::Add(hex_vertices, map.Draw + Point(cx, cy));
+                    outline.Hex = DarkEmperor::Add(hex_vertices, offset);
 
                     scene.Add(outline);
                 }
@@ -294,7 +294,7 @@ namespace DarkEmperor
 
                     auto first = -1;
 
-                    auto first_asset = -1;
+                    auto first_asset = Asset::NONE;
 
                     auto assets = 0;
 
@@ -327,7 +327,7 @@ namespace DarkEmperor
 
                         colors = Unit::GetColors(Kingdom::MULTIPLE);
                     }
-                    else
+                    else if (first != -1 && first_asset != Asset::NONE)
                     {
                         stack.Texture = Asset::Get(first_asset);
 
@@ -352,9 +352,7 @@ namespace DarkEmperor
 
                         auto texture_y = cy - texture_h / 2;
 
-                        auto offset = map.Draw + Point(texture_x, texture_y);
-
-                        stack.Location = offset;
+                        stack.Location = map.Draw + Point(texture_x, texture_y);
 
                         stack.Dimensions = Point(texture_w, texture_h);
                     }
