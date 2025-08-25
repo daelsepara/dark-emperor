@@ -292,7 +292,7 @@ namespace DarkEmperor
             translated.push_back(point + origin);
         }
 
-        return points;
+        return translated;
     }
 
     struct ColorScheme

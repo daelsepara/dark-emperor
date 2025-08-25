@@ -12,6 +12,7 @@
 #include "Asset.hpp"
 #include "Controls.hpp"
 #include "Map.hpp"
+#include "Utilities.hpp"
 
 // classes and functions to define objects that will be rendered on screen
 namespace DarkEmperor
@@ -34,8 +35,11 @@ namespace DarkEmperor
         // dimensions
         Point Dimensions = Point(0, 0);
 
+        // location offset (used in rendering polygons)
+        Point LocationOffset = Point(0, 0);
+
         // texture associated with the element
-        SDL_Texture *Texture;
+        SDL_Texture *Texture = nullptr;
 
         // background color, 0 if none
         Uint32 Background = 0;
@@ -47,7 +51,7 @@ namespace DarkEmperor
         int Bounds = 0;
 
         // starting point in texture to be rendered. Used with Bounds.
-        int Offset = 0;
+        int TextureOffset = 0;
 
         // thickness of the border in pixels
         int BorderSize = 0;
@@ -216,6 +220,8 @@ namespace DarkEmperor
 
                 auto cx = 0;
 
+                auto texture_offset = Point(0, 0);
+
                 // calculate hex center locations
                 if (map.Flat)
                 {
@@ -238,23 +244,43 @@ namespace DarkEmperor
 
                 auto hex = Element();
 
-                hex.Texture = Asset::Get(tile.Asset);
+                if (tile.Asset != Asset::NONE)
+                {
+                    hex.Texture = Asset::Get(tile.Asset);
+                }
 
                 hex.Shape = Shape::HEX;
 
                 if (hex.Texture)
                 {
-                    // get texture dimensions
+                    // set texture dimensions
                     auto terrain_w = Asset::Width(hex.Texture);
 
                     auto terrain_h = Asset::Height(hex.Texture);
+
+                    if (map.Flat)
+                    {
+                        terrain_w = Utilities::ClipValue(map.Size * 2, 0, terrain_w);
+
+                        // pad
+                        terrain_h = Utilities::ClipValue(int(map.Size * DarkEmperor::Scale + 1), 0, terrain_h);
+                    }
+                    else
+                    {
+                        // pad
+                        terrain_w = Utilities::ClipValue(int(map.Size * DarkEmperor::Scale + 1), 0, terrain_w);
+
+                        terrain_h = Utilities::ClipValue(map.Size * 2, 0, terrain_h);
+                    }
 
                     // calculate terrain tile offsets (to center it within the hex)
                     auto terrain_x = cx - terrain_w / 2;
 
                     auto terrain_y = cy - terrain_h / 2;
 
-                    hex.Hex = DarkEmperor::Add(offset_hex, map.Draw + Point(terrain_x, terrain_y));
+                    hex.Hex = offset_hex;
+
+                    hex.LocationOffset = map.Draw + Point(terrain_x, terrain_y);
                 }
                 else
                 {
@@ -266,6 +292,9 @@ namespace DarkEmperor
                     // add hex outline / background
                     hex.Hex = DarkEmperor::Add(hex_vertices, offset);
                 }
+
+                // set hex orientation
+                hex.Flat = map.Flat;
 
                 // add hex (background textures/colors)
                 scene.Add(hex);
@@ -283,6 +312,9 @@ namespace DarkEmperor
                     outline.Border = tile.Border;
 
                     outline.Hex = DarkEmperor::Add(hex_vertices, offset);
+
+                    // set hex orientation
+                    outline.Flat = map.Flat;
 
                     scene.Add(outline);
                 }

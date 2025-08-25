@@ -732,13 +732,12 @@ namespace DarkEmperor::Graphics
         {
         case Shape::HEX:
 
-            // assumes that hex definition already includes the offset
             if (element.Hex.size() > 0)
             {
                 // render texture within hex boundaries
                 if (element.Texture != nullptr)
                 {
-                    Graphics::RenderHex(graphics, element.Texture, element.Hex, Point(0, 0), element.Flat);
+                    Graphics::RenderHex(graphics, element.Texture, element.Hex, element.LocationOffset, element.Flat);
                 }
                 else
                 {
@@ -747,7 +746,7 @@ namespace DarkEmperor::Graphics
                         Graphics::SetRenderDrawColor(graphics, element.Background);
 
                         // draw filled hex
-                        Graphics::RenderHex(graphics, element.Hex, Point(0, 0), element.Background, element.Flat);
+                        Graphics::RenderHex(graphics, element.Hex, element.LocationOffset, element.Background, element.Flat);
                     }
 
                     if (element.Border != 0)
@@ -766,7 +765,7 @@ namespace DarkEmperor::Graphics
 
             if (element.Texture != nullptr)
             {
-                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.TextureOffset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
             }
             else
             {
@@ -808,7 +807,7 @@ namespace DarkEmperor::Graphics
 
             if (element.Texture != nullptr)
             {
-                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.Offset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.TextureOffset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
             }
 
             break;

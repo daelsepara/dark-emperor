@@ -134,6 +134,12 @@ namespace DarkEmperor::Asset
         return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Get(Asset::Ids[asset]) : nullptr;
     }
 
+    // retrieve texture id based on string id
+    int Id(std::string asset)
+    {
+        return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Ids[asset] : NONE;
+    }
+
     // clears (frees) all textures
     void ClearTextures()
     {

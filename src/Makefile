@@ -1,5 +1,7 @@
 HEXMAP=HexMap.cpp
 HEXMAP_OUTPUT=HexMap.exe
+MAPTEST=MapTest.cpp
+MAPTEST_OUTPUT=MapTest.exe
 DEBUG=-g -O0
 LIBS=-O3 -std=c++17 -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 INCLUDES=-I/usr/include/SDL2
@@ -32,12 +34,18 @@ endif
 
 .PHONY: all clean
 
-all: clean hex-map
+all: clean hex-map map-test
 
 hex-map:
 	$(CC) -Wall $(HEXMAP) $(LIBS) $(INCLUDES) -o $(HEXMAP_OUTPUT)
 
+map-test:
+	$(CC) -Wall $(MAPTEST) $(LIBS) $(INCLUDES) -o $(MAPTEST_OUTPUT)
+
 clean-hex-map:
 	rm -f $(HEXMAP_OUTPUT) *.o
 
-clean: clean-hex-map
+clean-map-test:
+	rm -f $(MAPTEST_OUTPUT) *.o
+
+clean: clean-hex-map clean-map-test

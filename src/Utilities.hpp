@@ -38,6 +38,12 @@ namespace DarkEmperor::Utilities
     {
         return Utilities::ChangeCase(str, ::tolower);
     }
+
+    template <typename T>
+    T ClipValue(T value, T min_value, T max_value)
+    {
+        return std::min(std::max(value, min_value), max_value);
+    }
 }
 
 #endif

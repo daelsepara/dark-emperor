@@ -35,6 +35,10 @@
         {
             "id": "PORT",
             "path": "images/terrain/anchor.png"
+        },
+        {
+            "id": "DESERT",
+            "path": "images/test/desert.png"
         }
     ]
 }
