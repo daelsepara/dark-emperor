@@ -354,7 +354,7 @@ namespace DarkEmperor
                     }
                 }
 
-                if (point != Point(-1, -1))
+                if (!point.IsNone())
                 {
                     break;
                 }
