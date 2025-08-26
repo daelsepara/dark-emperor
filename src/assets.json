@@ -37,6 +37,10 @@
             "path": "images/terrain/anchor.png"
         },
         {
+            "id": "BATTLEFIELD",
+            "path": "images/terrain/crossed-swords.png"
+        },
+        {
             "id": "DESERT",
             "path": "images/test/desert.png"
         }

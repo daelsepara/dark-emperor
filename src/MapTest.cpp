@@ -35,40 +35,52 @@ namespace DarkEmperor
             {
                 auto point = Point(x, y);
 
-                auto show = false;
+                auto city = false;
 
-                // show hex "occupant"
+                auto battlefield = false;
+
+                // show city "terrain"
                 if (map.Flat)
                 {
-                    show = (point.Y % 3 == 0 && point.X % 2 == 0) || (point.Y % 3 == 1 && point.X % 2 == 1);
+                    city = (point.Y % 3 == 0 && point.X % 2 == 0) || (point.Y % 3 == 1 && point.X % 2 == 1);
+
+                    battlefield = (point.Y % 3 == 2 && point.X % 2 == 0) || (point.Y % 3 == 0 && point.X % 2 == 1);
                 }
                 else
                 {
-                    show = (point.X % 3 == 0 && point.Y % 2 == 0) || (point.X % 3 == 1 && point.Y % 2 == 1);
+                    city = (point.X % 3 == 0 && point.Y % 2 == 0) || (point.X % 3 == 1 && point.Y % 2 == 1);
+
+                    battlefield = (point.X % 3 == 2 && point.Y % 2 == 0) || (point.X % 3 == 0 && point.Y % 2 == 1);
                 }
 
                 auto &tile = map[Point(x, y)];
 
-                if (show)
+                if (city)
                 {
                     tile.Asset = Asset::Id("DESERT");
 
-                    tile.Border = Color::Yellow;
+                    tile.Terrain = TerrainType::CAPITAL_CITY;
+                }
+                else if (battlefield)
+                {
+                    tile.Background = Color::White;
+
+                    tile.Terrain = TerrainType::BATTLEFIELD;
                 }
                 else
                 {
                     tile.Background = Color::Grey;
 
-                    tile.Border = Color::White;
+                    tile.Terrain = TerrainType::PORT;
                 }
+
+                tile.Border = Color::Black;
             }
         }
 
-        auto input = Controls::User();
-
         auto units = DarkEmperor::Units();
 
-        auto scene = MapScene(map, units);
+        auto scene = MapScene(map, units, Color::Brown);
 
         Input::WaitForNext(graphics, scene);
 

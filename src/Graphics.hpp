@@ -765,7 +765,7 @@ namespace DarkEmperor::Graphics
 
             if (element.Texture != nullptr)
             {
-                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.TextureOffset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Dimensions.X, element.Dimensions.Y, element.TextureBounds, element.TextureOffset, element.Border, element.Background);
             }
             else
             {
@@ -807,7 +807,7 @@ namespace DarkEmperor::Graphics
 
             if (element.Texture != nullptr)
             {
-                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Bounds, element.TextureOffset, element.Dimensions.X, element.Dimensions.Y, element.Border, element.Background);
+                Graphics::RenderTexture(graphics, element.Texture, element.Dimensions.X, element.Dimensions.Y, element.Location.X, element.Location.Y, element.Dimensions.X, element.Dimensions.Y, element.TextureBounds, element.TextureOffset, element.Border, element.Background);
             }
 
             break;

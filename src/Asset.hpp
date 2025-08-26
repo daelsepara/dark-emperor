@@ -128,16 +128,16 @@ namespace DarkEmperor::Asset
         return DarkEmperor::Has(Asset::Textures, asset) ? Asset::Textures[asset] : nullptr;
     }
 
-    // retrieve texture based on string id
-    SDL_Texture *Get(std::string asset)
-    {
-        return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Get(Asset::Ids[asset]) : nullptr;
-    }
-
-    // retrieve texture id based on string id
+    // retrieve texture numeric id based on string id
     int Id(std::string asset)
     {
         return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Ids[asset] : NONE;
+    }
+
+    // retrieve texture based on string id
+    SDL_Texture *Get(std::string asset)
+    {
+        return DarkEmperor::Has(Asset::Ids, asset) ? Asset::Get(Asset::Id(asset)) : nullptr;
     }
 
     // clears (frees) all textures

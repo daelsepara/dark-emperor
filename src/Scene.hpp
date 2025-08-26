@@ -47,10 +47,10 @@ namespace DarkEmperor
         // border color, 0 if none
         Uint32 Border = 0;
 
-        // size of texture portion to be rendered. Used with Offset.
-        int Bounds = 0;
+        // size of texture portion to be rendered. used with TextureOffset.
+        int TextureBounds = 0;
 
-        // starting point in texture to be rendered. Used with Bounds.
+        // starting point in texture to be rendered. used with TextureBounds.
         int TextureOffset = 0;
 
         // thickness of the border in pixels
@@ -65,6 +65,7 @@ namespace DarkEmperor
         // shape of the element
         Shape Shape = Shape::NONE;
 
+        // radius of circle element
         int Radius = 0;
 
         Element() {}
@@ -147,9 +148,21 @@ namespace DarkEmperor
 
             break;
 
+        case TerrainType::CAPITAL_CITY:
+
+            texture = Asset::Get("CITY");
+
+            break;
+
         case TerrainType::PORT:
 
             texture = Asset::Get("PORT");
+
+            break;
+
+        case TerrainType::BATTLEFIELD:
+
+            texture = Asset::Get("BATTLEFIELD");
 
             break;
 
@@ -169,6 +182,8 @@ namespace DarkEmperor
             auto terrain_w = Asset::Width(texture);
 
             auto terrain_h = Asset::Height(texture);
+
+            feature.TextureBounds = terrain_h;
 
             // calculate terrain tile offsets (to center it within the hex)
             feature.Location = location - Point(terrain_w, terrain_h) / 2;
