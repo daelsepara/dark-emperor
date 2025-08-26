@@ -166,6 +166,12 @@ namespace DarkEmperor
 
             break;
 
+        case TerrainType::MAGIC_HEX:
+
+            texture = Asset::Get("MAGIC HEX");
+
+            break;
+
         default:
 
             break;

@@ -41,6 +41,10 @@
             "path": "images/terrain/crossed-swords.png"
         },
         {
+            "id": "MAGIC HEX",
+            "path": "images/terrain/pentacle.png"
+        },
+        {
             "id": "DESERT",
             "path": "images/test/desert.png"
         }
