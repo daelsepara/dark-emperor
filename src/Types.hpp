@@ -295,6 +295,23 @@ namespace DarkEmperor
         return translated;
     }
 
+    Points Add(Points &points, Points offsets, int scale)
+    {
+        auto translated = Points();
+
+        for (auto i = 0; i < std::min(points.size(), offsets.size()); i++)
+        {
+            translated.push_back(points[i] + offsets[i] * scale);
+        }
+
+        return translated;
+    }
+
+    Points Add(Points &points, Points offsets)
+    {
+        return Add(points, offsets, 1);
+    }
+
     struct ColorScheme
     {
         Uint32 Square = 0;

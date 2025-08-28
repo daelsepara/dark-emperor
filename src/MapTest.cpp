@@ -80,9 +80,26 @@ namespace DarkEmperor
 
         auto units = DarkEmperor::Units();
 
-        auto scene = MapScene(map, units, Color::Brown);
+        auto input = Controls::User();
 
-        Input::WaitForNext(graphics, scene);
+        auto done = false;
+
+        while (!done)
+        {
+            auto scene = MapScene(map, units, Color::Brown, Color::Red);
+
+            input = Input::WaitForInput(graphics, {scene}, scene.Controls, input);
+
+            if (Input::Check(input))
+            {
+                if (input.Type == Controls::Type::LOCATION)
+                {
+                    done = true;
+                }
+
+                input.Selected = false;
+            }
+        }
 
         Asset::ClearTextures();
 

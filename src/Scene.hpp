@@ -78,14 +78,12 @@ namespace DarkEmperor
 
     typedef List<Element> Elements;
 
-    typedef List<Controls::Base> ControlsList;
-
     class Scene
     {
     public:
         Elements Elements = {};
 
-        ControlsList Controls = {};
+        Controls::Collection Controls = {};
 
         // background color of the entire screen. set before rendering each element
         Uint32 Background = 0;
@@ -202,7 +200,7 @@ namespace DarkEmperor
         }
     }
 
-    Scene MapScene(Map &map, Units &units, Uint32 background = 0)
+    Scene MapScene(Map &map, Units &units, Uint32 background = 0, Uint32 highlight = 0)
     {
         auto scene = Scene();
 
@@ -412,6 +410,52 @@ namespace DarkEmperor
 
                     scene.Add(stack);
                 }
+
+                // setup control definition
+                auto control = Controls::Base();
+
+                // current id
+                auto id = int(scene.Controls.size());
+
+                auto dx = (x - map.View.X);
+
+                auto dy = (y - map.View.Y);
+
+                // set references to other controls (id)
+                auto lt = dx > 0 ? id - 1 : id;
+
+                auto rt = dx < map.Limit.X - 1 ? id + 1 : id;
+
+                auto up = dy > 0 ? id - map.Limit.X : id;
+
+                auto dn = dy < map.Limit.Y - 1 ? id + map.Limit.X : id;
+
+                control.Id = {id, lt, rt, up, dn};
+
+                control.Type = Controls::Type::LOCATION;
+
+                // setup control hit box
+                control.Location = offset - map.Size / 2;
+
+                control.Dimensions = Point(map.Size, map.Size);
+
+                // set color of hex outline
+                control.Highlight = highlight;
+
+                // set flag indicating control refers to map coordinates
+                control.OnMap = true;
+
+                // set actual location on map and position of hex outline on screen
+                control.Map.Coordinates = Point(x, y);
+
+                control.Map.Center = offset;
+
+                control.Map.Flat = map.Flat;
+
+                control.Map.Size = map.Size;
+
+                // add control to scene
+                scene.Add(control);
             }
         }
 

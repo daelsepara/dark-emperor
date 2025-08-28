@@ -851,7 +851,7 @@ namespace DarkEmperor::Graphics
         }
     }
 
-    // render scenes
+    // render scenes (no blurring)
     void Render(Graphics::Base &graphics, Scenes scenes)
     {
         if (graphics.Renderer && scenes.size() > 0)
@@ -870,7 +870,37 @@ namespace DarkEmperor::Graphics
         }
     }
 
-    void Render(Graphics::Base &graphics, ControlsList &controls, Controls::User input)
+    // render scenes (with blurring)
+    void Dialog(Base &graphics, Scenes scenes, bool blur = true)
+    {
+        if (graphics.Renderer && scenes.size() > 0)
+        {
+            auto &front = scenes.front().get();
+
+            if (front.Background != 0)
+            {
+                Graphics::FillWindow(graphics, front.Background);
+            }
+
+            for (auto it = scenes.begin(); it != scenes.end(); it++)
+            {
+                if ((it == (scenes.end() - 1)) && blur)
+                {
+                    auto rect = Graphics::CreateRect(graphics, graphics.Width, graphics.Height, 0, 0, Color::Blur);
+
+                    SDL_RenderFillRect(graphics.Renderer, &rect);
+                }
+
+                Graphics::Overlay(graphics, (*it).get());
+            }
+        }
+    }
+
+    const Points OffsetsFlat = {{1, 0}, {0, 1}, {0, 1}, {-1, 0}, {0, -1}, {0, -1}};
+
+    const Points OffsetsPointy = {{1, 0}, {1, 0}, {0, 1}, {-1, 0}, {-1, 0}, {0, -1}};
+
+    void Render(Graphics::Base &graphics, Controls::Collection &controls, Controls::User input)
     {
         for (auto &control : controls)
         {
@@ -880,8 +910,15 @@ namespace DarkEmperor::Graphics
                 {
                     if (control.OnMap)
                     {
-                        // render hex outline
-                        Graphics::RenderHex(graphics, control.Map.Hex, control.Map.Offset, control.Highlight, control.Map.Flat);
+                        // render hex outline(s)
+                        auto hex = DarkEmperor::Vertices(control.Map.Center, control.Map.Size, control.Map.Flat);
+
+                        for (auto pixel = -control.Pixels; pixel < control.Pixels; pixel++)
+                        {
+                            Points offsets = control.Map.Flat ? Graphics::OffsetsFlat : Graphics::OffsetsPointy;
+
+                            Graphics::DrawPolygon(graphics, DarkEmperor::Add(hex, offsets, pixel), control.Highlight);
+                        }
                     }
                     else
                     {
@@ -913,6 +950,15 @@ namespace DarkEmperor::Graphics
 
             Graphics::RenderNow(graphics);
         }
+    }
+
+    void RenderNow(Graphics::Base &graphics, Scenes &scenes, Controls::Collection controls, Controls::User input, bool blur = true)
+    {
+        Graphics::Dialog(graphics, scenes, blur);
+
+        Graphics::Render(graphics, controls, input);
+
+        Graphics::RenderNow(graphics);
     }
 
     void RenderNow(Graphics::Base &graphics, Scenes scenes)

@@ -39,14 +39,14 @@ namespace DarkEmperor::Controls
         // location on the map (hex)
         Point Coordinates = Point(-1, -1);
 
-        Point Offset = Point(0, 0);
+        // location on screen
+        Point Center = Point(-1, -1);
 
-        // vertices of the hex highlight (used with OnMap and Map)
-        Points Hex = {};
+        // size (pixels)
+        int Size = 0;
 
         // hex orientation is flat
         bool Flat = false;
-
     };
 
     class Base
@@ -165,6 +165,25 @@ namespace DarkEmperor::Controls
             this->Current = -1;
         }
     };
+
+    typedef List<Controls::Base> Collection;
+
+    int Find(Controls::Collection &controls, Controls::Type type)
+    {
+        auto result = -1;
+
+        for (auto &control : controls)
+        {
+            if (control.Type == type)
+            {
+                result = control.Id.Me;
+
+                break;
+            }
+        }
+
+        return result;
+    }
 }
 
 #endif
