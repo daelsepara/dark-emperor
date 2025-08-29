@@ -856,11 +856,11 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer && scenes.size() > 0)
         {
-            auto &front = scenes.front().get();
+            auto &back = scenes.front().get();
 
-            if (front.Background != 0)
+            if (back.Background != 0)
             {
-                Graphics::FillWindow(graphics, front.Background);
+                Graphics::FillWindow(graphics, back.Background);
             }
 
             for (auto &scene : scenes)
@@ -875,11 +875,11 @@ namespace DarkEmperor::Graphics
     {
         if (graphics.Renderer && scenes.size() > 0)
         {
-            auto &front = scenes.front().get();
+            auto &back = scenes.front().get();
 
-            if (front.Background != 0)
+            if (back.Background != 0)
             {
-                Graphics::FillWindow(graphics, front.Background);
+                Graphics::FillWindow(graphics, back.Background);
             }
 
             for (auto it = scenes.begin(); it != scenes.end(); it++)

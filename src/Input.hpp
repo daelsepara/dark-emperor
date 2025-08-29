@@ -195,7 +195,7 @@ namespace DarkEmperor::Input
     }
 
     // render all scenes and wait for input from specified controls set
-    Controls::User WaitForInput(Graphics::Base &graphics, Scenes scenes, Controls::Collection &controls, Controls::User input, bool blur = true, int delay = Input::StandardDelay)
+    Controls::User WaitForInput(Graphics::Base &graphics, Scenes scenes, Controls::Collection &controls, Controls::User &input, bool blur = true, int delay = Input::StandardDelay)
     {
         if (input.Text)
         {
@@ -504,6 +504,13 @@ namespace DarkEmperor::Input
         SDL_FlushEvent(result.type);
 
         return input;
+    }
+
+    Controls::User WaitForInput(Graphics::Base &graphics, Scenes scenes, Controls::User input, bool blur = true, int delay = Input::StandardDelay)
+    {
+        auto &front = scenes.back().get();
+
+        return Input::WaitForInput(graphics, scenes, front.Controls, input, blur, delay);
     }
 
     // check inputs

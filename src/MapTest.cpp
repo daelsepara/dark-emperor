@@ -88,7 +88,7 @@ namespace DarkEmperor
         {
             auto scene = MapScene(map, units, Color::Brown, Color::Red);
 
-            input = Input::WaitForInput(graphics, {scene}, scene.Controls, input);
+            input = Input::WaitForInput(graphics, {scene}, input, true, 25);
 
             if (Input::Check(input))
             {
