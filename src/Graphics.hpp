@@ -913,10 +913,10 @@ namespace DarkEmperor::Graphics
                         // render hex outline(s)
                         auto hex = DarkEmperor::Vertices(control.Map.Center, control.Map.Size, control.Map.Flat);
 
-                        for (auto pixel = -control.Pixels; pixel < control.Pixels; pixel++)
-                        {
-                            Points offsets = control.Map.Flat ? Graphics::OffsetsFlat : Graphics::OffsetsPointy;
+                        Points offsets = control.Map.Flat ? Graphics::OffsetsFlat : Graphics::OffsetsPointy;
 
+                        for (auto pixel = -control.Pixels; pixel <= control.Pixels; pixel++)
+                        {
                             Graphics::DrawPolygon(graphics, DarkEmperor::Add(hex, offsets, pixel), control.Highlight);
                         }
                     }
