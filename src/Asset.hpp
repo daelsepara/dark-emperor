@@ -108,17 +108,17 @@ namespace DarkEmperor::Asset
 
     UnorderedMap<std::string, int> Ids = {};
 
-    template <typename T>
-    void Free(UnorderedMap<T, SDL_Texture *> &textures)
+    template <typename T, typename R>
+    void Free(UnorderedMap<T, R> &resources)
     {
-        if (!textures.empty())
+        if (!resources.empty())
         {
-            for (auto &texture : textures)
+            for (auto &resource : resources)
             {
-                Asset::Free(&texture.second);
+                Asset::Free(&resource.second);
             }
 
-            textures.clear();
+            resources.clear();
         }
     }
 
