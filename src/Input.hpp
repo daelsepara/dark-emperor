@@ -506,11 +506,28 @@ namespace DarkEmperor::Input
         return input;
     }
 
+    // render scenes then wait for user input
     Controls::User WaitForInput(Graphics::Base &graphics, Scenes scenes, Controls::User input, bool blur = true, int delay = Input::StandardDelay)
     {
         auto &front = scenes.back().get();
 
         return Input::WaitForInput(graphics, scenes, front.Controls, input, blur, delay);
+    }
+
+    // render background and overlay then wait for user input
+    Controls::User WaitForInput(Graphics::Base &graphics, Scene &background, Scene &overlay, Controls::User input, bool is_dialog = false, bool blur = true, int delay = Input::StandardDelay)
+    {
+        auto &controls = is_dialog ? overlay.Controls : background.Controls;
+
+        return Input::WaitForInput(graphics, {background, overlay}, controls, input, blur, delay);
+    }
+
+    // render scene then wait for user input
+    Controls::User WaitForInput(Graphics::Base &graphics, Scene &overlay, Controls::User input)
+    {
+        auto background = Scene();
+
+        return Input::WaitForInput(graphics, background, overlay, input, true);
     }
 
     // check inputs

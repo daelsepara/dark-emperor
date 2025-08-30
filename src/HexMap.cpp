@@ -96,7 +96,7 @@ namespace DarkEmperor
             offset_hex.push_back(hex[i] - Point(min_x, min_y));
         }
 
-        Scene scene = Scene();
+        auto scene = Scene();
 
         while (true)
         {
